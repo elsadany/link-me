@@ -33,7 +33,7 @@ class SupscriptionApi extends Controller
             else
                 $last_supscription_data=['is_subscribed'=>1,"is_finished"=>1,'finish_at'=>null];
         }
-      $supscription=null;
+        $supscription=null;
         if(is_object($last_supscription))
             $supscription=UsersParchase::where('id',$last_supscription->id)->first()->toArray();
         $diamonds=UsersDiamond::where('user_id',$request->user()->id)->where('type',1)->sum('diamonds');
@@ -80,22 +80,22 @@ class SupscriptionApi extends Controller
 
         if(is_object($last_supscription)) {
             $supscription = SupscriptionPlan::latest()->where('id', $last_supscription->subscription_plan_id)->whereDate('finish_at','>=',Carbon::now('Asia/Riyadh'))->first();
-          if(is_object($supscription))
-            return response()->json([
-                'status' => true,
-                'code' => 200,
-                'message' => 'subscribed',
-                'data'=>['is_subscribed'=>1,"is_finished"=>0,'finish_at'=>$supscription->finish_at]
+            if(is_object($supscription))
+                return response()->json([
+                    'status' => true,
+                    'code' => 200,
+                    'message' => 'subscribed',
+                    'data'=>['is_subscribed'=>1,"is_finished"=>0,'finish_at'=>$supscription->finish_at]
 
-            ]);
-          else
-              return response()->json([
-                  'status' => true,
-                  'code' => 200,
-                  'message' => 'finished',
-                  'data'=>['is_subscribed'=>1,"is_finished"=>1,'finish_at'=>null]
+                ]);
+            else
+                return response()->json([
+                    'status' => true,
+                    'code' => 200,
+                    'message' => 'finished',
+                    'data'=>['is_subscribed'=>1,"is_finished"=>1,'finish_at'=>null]
 
-              ]);
+                ]);
         }else{
             return response()->json([
                 'status' => true,
@@ -108,33 +108,33 @@ class SupscriptionApi extends Controller
     }
 
     function buySubscription(Request $request){
-    $request->validate([
-        'supscription_plan_id'=>'required|exists:supscription_plans,id',
-        'transction_id'=>'required',
-        'paid_by'=>'required|in:android,ios'
+        $request->validate([
+            'supscription_plan_id'=>'required|exists:supscription_plans,id',
+            'transction_id'=>'required',
+            'paid_by'=>'required|in:android,ios'
 
-    ]);
-    $supscription_plan=SupscriptionPlan::find($request->supscription_plan_id);
-    $last_supscription=UsersParchase::where('user_id',$request->user()->id)->whereDate('finish_at','>=',Carbon::now('Asia/Riyadh'))->first();
-    $expire=Carbon::now('Asia/Riyadh')->addDays($supscription_plan->days);
-    if(is_object($last_supscription))
-        $expire= Carbon::createFromFormat('Y-m-d H:i:s', $last_supscription->finish_at)->addDays($supscription_plan->days);
-    $parchase=UsersParchase::create([
-        'paid_at'=>Carbon::now('Asia/Riyadh'),
-        'finish_at'=>$expire,
-        'subscription_plan_id'=>$supscription_plan->id,
-        'paid'=>$supscription_plan->price,
-        'user_id'=>$request->user()->id,
-        'transaction_id'=>$request->transaction_id,
-        'paid_by'=>$request->paid_by
-    ]);
-    $diamonds=UsersDiamond::create([
-        'user_id'=>$request->user()->id,
-        'diamonds'=>$supscription_plan->diamonds,
-        'type'=>1,
-        'paid_at'=>null,
-        'product_id'=>null
-    ]);
+        ]);
+        $supscription_plan=SupscriptionPlan::find($request->supscription_plan_id);
+        $last_supscription=UsersParchase::where('user_id',$request->user()->id)->whereDate('finish_at','>=',Carbon::now('Asia/Riyadh'))->first();
+        $expire=Carbon::now('Asia/Riyadh')->addDays($supscription_plan->days);
+        if(is_object($last_supscription))
+            $expire= Carbon::createFromFormat('Y-m-d H:i:s', $last_supscription->finish_at)->addDays($supscription_plan->days);
+        $parchase=UsersParchase::create([
+            'paid_at'=>Carbon::now('Asia/Riyadh'),
+            'finish_at'=>$expire,
+            'subscription_plan_id'=>$supscription_plan->id,
+            'paid'=>$supscription_plan->price,
+            'user_id'=>$request->user()->id,
+            'transaction_id'=>$request->transaction_id,
+            'paid_by'=>$request->paid_by
+        ]);
+        $diamonds=UsersDiamond::create([
+            'user_id'=>$request->user()->id,
+            'diamonds'=>$supscription_plan->diamonds,
+            'type'=>1,
+            'paid_at'=>null,
+            'product_id'=>null
+        ]);
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -149,7 +149,7 @@ class SupscriptionApi extends Controller
         return response()->json([
             'status' => true,
             'code' => 200,
-           'data'=>$diamonds-$used
+            'data'=>$diamonds-$used
 
 
         ]);
@@ -196,7 +196,7 @@ class SupscriptionApi extends Controller
                 'status' => false,
                 'code' => 422,
                 'message' => 'you don`t have enough diamonds',
-              'errors'=>['you don`t have enough diamonds']
+                'errors'=>new \stdClass('you don`t have enough diamonds')
 
             ]);
         }
@@ -219,7 +219,7 @@ class SupscriptionApi extends Controller
             ]);
         }
         else {
-        $last=UserStar::oldest('expire_at')->first();
+            $last=UserStar::oldest('expire_at')->first();
             UsersDiamond::create([
                 'diamonds' => $starPrice->diamonds,
                 'user_id' => $request->user()->id,
@@ -254,15 +254,15 @@ class SupscriptionApi extends Controller
             $userData[$x]=$user->toArray();
             $userData[$x]['is_own']=$user->id==$request->user()->id?true:false;
             $userData[$x]['is_star']=1;
-             $userData[$x]['chat_id']=optional(Chat::where(['first_user_id'=>$request->user()->id,'second_user_id'=>$user->id,'delete_from_first_user'=>0])
-                 ->orWhere(function($query) use($request,$user) {
-                     $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $user->id, 'delete_from_second_user' => 0]);
-                 })->first())->id;
+            $userData[$x]['chat_id']=optional(Chat::where(['first_user_id'=>$request->user()->id,'second_user_id'=>$user->id,'delete_from_first_user'=>0])
+                ->orWhere(function($query) use($request,$user) {
+                    $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $user->id, 'delete_from_second_user' => 0]);
+                })->first())->id;
             $x=$x+1;
 
         }
 
-            $users=User::where('type','user')->limit(15-$users->count())->inRandomOrder()->get();
+        $users=User::where('type','user')->limit(15-$users->count())->inRandomOrder()->get();
 
 
         foreach ($users as $key=>$user){
@@ -283,10 +283,10 @@ class SupscriptionApi extends Controller
         return response()->json([
             'status' => true,
             'code' => 200,
-          'data'=>['users'=>$userData,
-              'stars'=>StarsPrice::get()->toArray(),
-              'diamonds'=>$diamonds-$used,
-          ]
+            'data'=>['users'=>$userData,
+                'stars'=>StarsPrice::get()->toArray(),
+                'diamonds'=>$diamonds-$used,
+            ]
 
 
         ]);
