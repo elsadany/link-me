@@ -47,7 +47,10 @@ class ChatsApi extends Controller
               'message'=>'لقد استزفت عدد الطلبات الخاص بك '
           ]);
       }
-      $chat=Chat::where('first_user_id',auth()->user()->id)->where('second_user_id',$request->user_id)->first();
+      $chat=Chat::where(['first_user_id'=>auth()->user()->id,'second_user_id'=>$request->user_id])
+          ->orWhere(function($query) use($request) {
+              $query->where(['second_user_id' => $request->user()->id,'first_user_id'=>$request->user_id ]);
+          })->first();
       if(!is_object($chat))
           $chat=Chat::create([
               'first_user_id'=>auth()->user()->id,
@@ -59,6 +62,7 @@ class ChatsApi extends Controller
           $chat->id,
         $chat->is_accepted
       ));
+      if($request->type!='public')
       event(new SendFcmNotificationEvent([$chat->secondUser->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id'=>$chat->id,'sender_id'=>$request->user()->id,'is_accepted'=>$chat->is_accepted,'type'=>'request']) );
 
       return response()->json([
