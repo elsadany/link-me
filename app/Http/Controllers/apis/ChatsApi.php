@@ -196,7 +196,7 @@ class ChatsApi extends Controller
         ));
         event(new SendFcmNotificationEvent([$reciever->fcm_token], 'تم ارسال رسالة لك', 'تم ارسال رسالة لك',
             ['chat_id'=>$chat->id,'sender_id'=>$request->user()->id,'reciever_id'=>$reciever->id,'message'=>$request->message,'is_accepted'=>$chat->is_accepted,'type'=>'chat',
-                'message_type'=>$request->type,'media_type'=>$request->media_type,'file'=>$message->filePath]) );
+                'chat_message_type'=>$request->type,'media_type'=>$request->media_type,'file'=>$message->filePath]) );
 
         return response()->json([
             'status'=>true,
