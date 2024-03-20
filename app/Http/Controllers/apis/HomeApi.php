@@ -130,8 +130,8 @@ class HomeApi extends Controller
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $stories->toArray(),
-            'post' => $posts->toArray()
+            'data' => $posts->toArray(),
+            'post' => $stories->toArray()
         ]);
     }
 
