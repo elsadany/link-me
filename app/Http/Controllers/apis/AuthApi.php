@@ -602,11 +602,14 @@ class AuthApi extends Controller
         }
         if ($request->country_id != '')
             $users = $users->where('country_id', $request->country_id);
-        $users = $users->inRandomOrder()->limit(50)->get();
+        $users = $users->oldest()->limit(5)->where('id','>',auth()->user()->id)->get();
+        $usersarr=$users->toArray();
+        $user=$request->user();
+        $user->update(['last_user_id'=>$usersarr[count($usersarr)-1]]);
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $users->toArray()
+            'data' =>$usersarr
         ]);
     }
     function updateFcmToken(Request $request){
