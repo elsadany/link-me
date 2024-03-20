@@ -605,6 +605,9 @@ class AuthApi extends Controller
         $users = $users->oldest()->limit(5)->where('id','>',auth()->user()->id)->get();
         $usersarr=$users->toArray();
         $user=$request->user();
+        if(count($usersarr)<5)
+            $user->update(['last_user_id'=>0]);
+        else
         $user->update(['last_user_id'=>$usersarr[count($usersarr)-1]['id']]);
         return response()->json([
             'status' => true,
