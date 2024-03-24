@@ -55,16 +55,19 @@ class ChatsApi extends Controller
             $chat = Chat::create([
                 'first_user_id' => auth()->user()->id,
                 'second_user_id' => $request->user_id,
-                'is_special' => $request->is_special
+                'is_special' => $request->is_special,
+
             ]);
+
         $chat = Chat::find($chat->id);
         event(new LinkRequest(
             $chat->id,
             $chat->is_accepted
         ));
-        if ($request->type != 'public')
-            event(new SendFcmNotificationEvent([$chat->secondUser->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'request']));
-
+        if ($request->type != 'public'){
+            event(new SendFcmNotificationEvent([$chat->secondUser->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
+        $chat->update(['expire_at'=>Carbon::now()->addMinutes(10)->timestamp]);
+        }
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -81,17 +84,20 @@ class ChatsApi extends Controller
         $chat = Chat::find($request->request_id);
         $chat->is_accepted = 1;
         $chat->save();
-        $user_friend = UserFriend::where(['user_id' => $chat->first_user_id, 'friend_id' => $chat->second_user_id])
-            ->where(['user_id' => $chat->second_user_id, 'friend_id' => $chat->first_user_id])->first();
-        if (!is_object($user_friend)) {
-            UserFriend::create([
-                'user_id' => $chat->first_user_id, 'friend_id' => $chat->second_user_id
-            ]);
+        if($request->type=='friend_request') {
+            $user_friend = UserFriend::where(['user_id' => $chat->first_user_id, 'friend_id' => $chat->second_user_id])
+                ->where(['user_id' => $chat->second_user_id, 'friend_id' => $chat->first_user_id])->first();
+            if (!is_object($user_friend)) {
+                UserFriend::create([
+                    'user_id' => $chat->first_user_id, 'friend_id' => $chat->second_user_id
+                ]);
+            }
         }
         event(new LinkRequest(
             $chat->id,
             $chat->is_accepted
         ));
+        $chat->update(['expire_at'=>null]);
         event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'request'], 'acceptOrReject'));
         return response()->json([
             'status' => true,
