@@ -56,6 +56,7 @@ class ChatsApi extends Controller
                 'first_user_id' => auth()->user()->id,
                 'second_user_id' => $request->user_id,
                 'is_special' => $request->is_special,
+                'type'=>$request->type
 
             ]);
 
