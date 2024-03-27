@@ -101,7 +101,7 @@ class ChatsApi extends Controller
             $chat->is_accepted
         ));
         $chat->update(['expire_at'=>null]);
-        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $chat->type], 'acceptOrReject'));
+//        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $chat->type], 'acceptOrReject'));
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -123,7 +123,7 @@ class ChatsApi extends Controller
             $chat->id,
             $chat->is_accepted
         ));
-        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', 'تم رفض الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' =>$chat->type]));
+//        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', 'تم رفض الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' =>$chat->type]));
 
         return response()->json([
             'status' => true,
