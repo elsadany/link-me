@@ -85,7 +85,7 @@ class ChatsApi extends Controller
         $chat = Chat::find($request->request_id);
         $chat->is_accepted = 1;
         $chat->save();
-        if($request->type=='friend_request') {
+        if($request->type!='home') {
             $user_friend = UserFriend::where(['user_id' => $chat->first_user_id, 'friend_id' => $chat->second_user_id])
                 ->where(['user_id' => $chat->second_user_id, 'friend_id' => $chat->first_user_id])->first();
             if (!is_object($user_friend)) {
