@@ -44,7 +44,6 @@ class SendFcmNotification
 //         dd($fcmNotification);
         $result=$this->pushFCM($fcmNotification);
 
-        dd($result);
     }
 
     public function pushFCM($data) {
