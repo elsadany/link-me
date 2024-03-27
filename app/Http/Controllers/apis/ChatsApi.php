@@ -59,13 +59,15 @@ class ChatsApi extends Controller
                 'type'=>$request->type
 
             ]);
+        elseif($request->type=='friend_request')
+            $chat->update(['type'=>$request->type,'is_accepted'=>0]);
 
         $chat = Chat::find($chat->id);
         event(new LinkRequest(
             $chat->id,
             $chat->is_accepted
         ));
-        if ($request->type != 'home'){
+        if ($request->type == 'friend_request'){
             event(new SendFcmNotificationEvent([$chat->secondUser->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
         $chat->update(['expire_at'=>Carbon::now()->addMinutes(10)->timestamp]);
         }
