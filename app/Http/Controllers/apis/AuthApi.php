@@ -580,8 +580,8 @@ class AuthApi extends Controller
             'time_period' => 'in:1,2,3',
             'country_id' => 'exists:countries,id'
         ]);
-        $first_users = Chat::where('first_user_id', $request->user()->id)->pluck('second_user_id')->toArray();
-        $second_users = Chat::where('second_user_id', $request->user()->id)->pluck('first_user_id')->toArray();
+        $first_users = Chat::where('first_user_id', $request->user()->id)->where('is_accepted',1)->pluck('second_user_id')->toArray();
+        $second_users = Chat::where('second_user_id', $request->user()->id)->where('is_accepted',1)->pluck('first_user_id')->toArray();
 
         $users = User::whereNotIn('id', array_merge($second_users, $first_users, [$request->user()->id]))->where('type','user')->where('id','>',$request->user()->last_user_id);
         if ($request->has('gander'))
