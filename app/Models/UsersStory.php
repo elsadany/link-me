@@ -9,7 +9,7 @@ class UsersStory extends Model
 {
     protected $guarded=['id'];
     use HasFactory;
-    protected $appends=['video','likes','comments'];
+    protected $appends=['video','likes','comments','is_like'];
     protected $with=['comments'];
     function getVideoAttribute(){
         if($this->file!='')
@@ -30,5 +30,8 @@ class UsersStory extends Model
     }
     function user(){
         return $this->belongsTo(User::class,'user_id');
+    }
+    function getIsLikeAttribute(){
+        return $this->likes()->where('user_id',auth()->guard('sanctum')->user()->id)->first()?1:0;
     }
 }
