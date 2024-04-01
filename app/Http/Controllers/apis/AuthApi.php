@@ -596,13 +596,13 @@ class AuthApi extends Controller
             $second_date = Carbon::now()->subYears(30);
             $users = $users->whereDate('birth_date', '<', $first_date)
                 ->whereDate('birth_date', '>=', $second_date);
-        } elseif ($request->time_period == 2) {
+        } elseif ($request->time_period == 3) {
             $first_date = Carbon::now()->subYears(30);
             $users = $users->whereDate('birth_date', '<', $first_date);
         }
         if ($request->country_id != '')
             $users = $users->where('country_id', $request->country_id);
-        $users = $users->oldest()->limit(5)->where('id','>',auth()->user()->id)->get();
+        $users = $users->oldest()->limit(5)->where('id','>',auth()->user()->last_user_id)->get();
         $usersarr=$users->toArray();
         $user=$request->user();
         if(count($usersarr)<5)
