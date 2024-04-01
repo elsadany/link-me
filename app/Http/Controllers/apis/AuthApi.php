@@ -596,7 +596,7 @@ class AuthApi extends Controller
             $second_date = Carbon::now()->subYears(30);
             $users = $users->whereDate('birth_date', '<', $first_date)
                 ->whereDate('birth_date', '>=', $second_date);
-        } else {
+        } elseif ($request->time_period == 2) {
             $first_date = Carbon::now()->subYears(30);
             $users = $users->whereDate('birth_date', '<', $first_date);
         }
