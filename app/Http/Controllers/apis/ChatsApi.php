@@ -68,7 +68,10 @@ class ChatsApi extends Controller
             $chat->is_accepted
         ));
         if ($request->type != 'home'){
-            event(new SendFcmNotificationEvent([$chat->secondUser->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
+            $second_user=User::find($chat->second_user_id);
+            if($request->user()->id==$chat->second_user_id)
+                $second_user=User::find($chat->first_user_id);
+            event(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
         $chat->update(['expire_at'=>strtotime(Carbon::now('Asia/Riyadh')->addMinutes(10))*1000]);
         }
         return response()->json([
