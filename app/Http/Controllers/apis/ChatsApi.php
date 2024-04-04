@@ -160,13 +160,14 @@ class ChatsApi extends Controller
             'chat_id' => 'required|exists:chats,id'
         ]);
         $chats = Chat::findOrFail($request->chat_id);
-        $chats->messages()->where('sender_id', '!=', $request->user()->id)->update(['read' => 1]);
+
         $messages = $chats->messages();
         if ($chats->first_user_id == $request->user()->id)
             $messages = $messages->where('delete_from_first_user', 0);
         elseif ($chats->second_user_id == $request->user()->id)
             $messages = $messages->where('delete_from_second_user', 0);
         $messages = $messages->paginate(10);
+        $chats->messages()->where('sender_id', '!=', $request->user()->id)->update(['read' => 1]);
         return response()->json([
             'status' => true,
             'code' => 200,
