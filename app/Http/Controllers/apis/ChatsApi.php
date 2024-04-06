@@ -215,12 +215,13 @@ class ChatsApi extends Controller
             $request->type,
             $request->media_type,
             $message->filePath,
-            $message->created_at
+            $message->created_at,
+            $message->one_time
 
         ));
         event(new SendFcmNotificationEvent([$reciever->fcm_token], 'تم ارسال رسالة لك', 'تم ارسال رسالة لك',
             ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'reciever_id' => $reciever->id, 'message' => $request->message, 'is_accepted' => $chat->is_accepted, 'type' => 'chat',
-                'chat_message_type' => $request->type, 'media_type' => $request->media_type, 'file' => $message->filePath]));
+                'chat_message_type' => $request->type, 'media_type' => $request->media_type, 'file' => $message->filePath,'one_time'=>$message->one_time]));
 
         return response()->json([
             'status' => true,
