@@ -69,7 +69,7 @@ class ChatsApi extends Controller
             $chat->id,
             $chat->is_accepted
         ));
-        if ($request->type != 'home'&&$x==1){
+        if ($request->type != 'home'){
             $second_user=User::find($chat->second_user_id);
             if($request->user()->id==$chat->second_user_id)
                 $second_user=User::find($chat->first_user_id);
