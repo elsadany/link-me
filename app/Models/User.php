@@ -130,7 +130,7 @@ class User extends Authenticatable
         if(auth()->guard('sanctum')->check()) {
             return is_object(UserFriend::where(['user_id' => auth()->guard('sanctum')->user()->id, 'friend_id' => $this->id])
                 ->orWhere(function ($query){
-                    $query->where(['friend_id' => auth()->guard('sanctum')->user()->id, 'user_id' => $this->user_id]);
+                    $query->where(['friend_id' => auth()->guard('sanctum')->user()->id, 'user_id' => $this->id]);
                 })->first())?1:0;
       }
         return 0;
