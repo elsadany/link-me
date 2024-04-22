@@ -105,7 +105,7 @@ class ChatsApi extends Controller
             $chat->id,
             $chat->is_accepted
         ));
-
+        if($chat->type=='friend_request')
         $chat->update(['expire_at'=>null]);
 //        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $chat->type], 'acceptOrReject'));
         return response()->json([
