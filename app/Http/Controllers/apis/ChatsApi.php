@@ -51,6 +51,7 @@ class ChatsApi extends Controller
             ->orWhere(function ($query) use ($request) {
                 $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $request->user_id]);
             })->first();
+        $x=0;
         if (!is_object($chat))
             $chat = Chat::create([
                 'first_user_id' => auth()->user()->id,
@@ -59,15 +60,16 @@ class ChatsApi extends Controller
                 'type'=>$request->type
 
             ]);
-        elseif($request->type=='friend_request')
-            $chat->update(['type'=>$request->type,'is_accepted'=>0]);
-
+        elseif($request->type=='friend_request') {
+            $chat->update(['type' => $request->type, 'is_accepted' => 0]);
+            $x=1;
+        }
         $chat = Chat::find($chat->id);
         event(new LinkRequest(
             $chat->id,
             $chat->is_accepted
         ));
-        if ($request->type != 'home'){
+        if ($request->type != 'home'&&$x==1){
             $second_user=User::find($chat->second_user_id);
             if($request->user()->id==$chat->second_user_id)
                 $second_user=User::find($chat->first_user_id);
