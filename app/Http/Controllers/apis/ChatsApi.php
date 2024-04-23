@@ -79,7 +79,7 @@ class ChatsApi extends Controller
             $second_user=User::find($chat->second_user_id);
             if($request->user()->id==$chat->second_user_id)
                 $second_user=User::find($chat->first_user_id);
-            if($chat->is_sent==0)
+            
             event(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
         $chat->update(['expire_at'=>strtotime(Carbon::now('Asia/Riyadh')->addMinutes(10))*1000,'is_sent'=>1]);
         }
