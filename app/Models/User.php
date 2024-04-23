@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded = ['id'];
-    protected $appends = ['imagePath', 'is_profile_completed', 'country', 'sent_tickets', 'unread_tickets', 'canAddStory', 'followers','is_blocked','is_follower'];
+    protected $appends = ['imagePath', 'is_profile_completed','links', 'country', 'sent_tickets', 'unread_tickets', 'canAddStory', 'followers','is_blocked','is_follower'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -137,7 +137,18 @@ class User extends Authenticatable
     function blocks(){
         return $this->hasMany(UserBlock::class,'user_id');
     }
-
+    function getLinksAttribute(){
+        return Chat::where('is_accepted',1)->where(function ($query){
+            $query->where('first_user_id',$this->id)->orWhere('second_user_id',$this->id);
+        })->count();
+    }
+    function getLikesAttribute(){
+        $x=0;
+        foreach ($this->stories as $one){
+            $x +=$one->likes;
+        }
+        return $x;
+    }
 
 
 }
