@@ -99,11 +99,10 @@ class User extends Authenticatable
 
     function getFollowersAttribute()
     {
-        if(auth()->guard('sanctum')->check())
+
         return UserFriend::where( 'friend_id' ,$this->id)
-            ->orWhere(['user_id' => $this->id])->count();
-        else
-            return 0;
+            ->orWhere('user_id' , $this->id)->count();
+
     }
 
     function getCanAddStoryAttribute()
