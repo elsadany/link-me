@@ -38,6 +38,12 @@ class ChatsApi extends Controller
             'message' => 'sometimes',
             'is_special' => 'required|boolean'
         ]);
+        if($request->user()->id==$request->user_id)
+            return response()->json([
+                'status' => false,
+                'code' => 400,
+                'message' => 'لا يمكن ارسال طلب لنفسك '
+            ]);
         $user = $request->user();
         $user->update(['number_of_request' => $user->number_of_request + 1]);
         if ($request->user()->type == 'visitor' && $user->number_of_request > 4) {
