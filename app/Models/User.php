@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded = ['id'];
-    protected $appends = ['imagePath', 'is_profile_completed','links', 'country', 'sent_tickets', 'unread_tickets', 'canAddStory', 'followers','is_blocked','is_follower'];
+    protected $appends = ['imagePath','likes', 'is_profile_completed','links', 'country', 'sent_tickets', 'unread_tickets', 'canAddStory', 'followers','is_blocked','is_follower'];
 
     /**
      * The attributes that should be hidden for serialization.
