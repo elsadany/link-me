@@ -16,14 +16,14 @@ class UsersStory extends Model
             return url($this->file);
         return '';
     }
-    function likesObject(){
+    function likes(){
         return $this->hasMany(StoriesLike::class,'story_id');
     }
     function comments(){
         return $this->hasMany(StoriesComment::class,'story_id');
     }
     function getLikesAttribute(){
-        return $this->likesObject()->count();
+        return $this->likes()->count();
     }
     function getCommentsAttribute(){
         return $this->comments()->count();
