@@ -215,7 +215,7 @@ class AuthApi extends Controller
         $used = UsersDiamond::where('user_id', $request->user()->id)->where('type', 0)->sum('diamonds');
         $userData['diamonds'] = $diamonds - $used;
         $userData['begin_at'] = null;
-        $userData['is_subscribed'] = is_object(UsersParchase::latest()->where('user_id', $user->id)->where('finish_at','<=',Carbon::now('Asia/Riyadh'))->first())?1:0;
+        $userData['is_subscribed'] = is_object(UsersParchase::latest()->where('user_id', $user->id)->where('finish_at','>=',Carbon::now('Asia/Riyadh'))->first())?1:0;
         $userData['blocks_number']=$user->blocks()->count();
         return response()->json([
             'status' => true,
