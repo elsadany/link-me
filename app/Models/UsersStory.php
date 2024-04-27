@@ -32,6 +32,9 @@ class UsersStory extends Model
         return $this->belongsTo(User::class,'user_id');
     }
     function getIsLikeAttribute(){
+        if(auth()->guard('sanctum')->check())
         return $this->likes()->where('user_id',auth()->guard('sanctum')->user()->id)->first()?1:0;
+        else
+            return 0;
     }
 }
