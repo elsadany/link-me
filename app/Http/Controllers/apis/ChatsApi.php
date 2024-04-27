@@ -108,13 +108,15 @@ class ChatsApi extends Controller
                 ]);
             }
         }
+
         event(new LinkRequest(
             $chat->id,
             $chat->is_accepted
         ));
         if($chat->type=='friend_request')
         $chat->update(['expire_at'=>null]);
-//        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $chat->type], 'acceptOrReject'));
+        if($chat->type=='friend_request')
+        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $chat->type], 'acceptOrReject'));
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -136,7 +138,8 @@ class ChatsApi extends Controller
             $chat->id,
             $chat->is_accepted
         ));
-//        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', 'تم رفض الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' =>$chat->type]));
+        if($chat->type=='friend_request')
+        event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', 'تم رفض الطلب الخاص بك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' =>$chat->type]));
 
         return response()->json([
             'status' => true,
