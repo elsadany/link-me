@@ -123,7 +123,7 @@ class HomeApi extends Controller
 
     function getStories(Request $request)
     {
-        $stories = User::latest('id')->whereHas('stories')->with('stories')->paginate(9);
+        $stories = User::latest('id')->whereHas('stories')->with('stories')->paginate(8);
         $user_ids = UserFriend::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
         $user_ids = array_merge($user_ids, UserFriend::where('user_id', $request->user()->id)->pluck('friend_id')->toArray());
         $posts = User::latest('id')->whereIn("id", $user_ids)->where('id', '!=', $request->user()->id)->whereHas('stories')->with('stories')->paginate(6);
