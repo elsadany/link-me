@@ -9,7 +9,7 @@ class UsersStory extends Model
 {
     protected $guarded=['id'];
     use HasFactory;
-    protected $appends=['video','likes','comments','is_like'];
+    protected $appends=['video','likes','comments','is_like','is_read'];
     protected $with=['comments'];
     function getVideoAttribute(){
         if($this->file!='')
@@ -36,5 +36,8 @@ class UsersStory extends Model
         return $this->likes()->where('user_id',auth()->guard('sanctum')->user()->id)->first()?1:0;
         else
             return 0;
+    }
+    function getIsReadAttribute(){
+        return 0;
     }
 }
