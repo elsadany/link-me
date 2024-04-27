@@ -127,7 +127,7 @@ class HomeApi extends Controller
         $user_ids = UserFriend::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
         $user_ids = array_merge($user_ids, UserFriend::where('user_id', $request->user()->id)->pluck('friend_id')->toArray());
         $user_ids=array_merge([$request->user()->id],$user_ids);
-        $posts = User::latest('id')->whereIn("id", $user_ids)->where('id', '!=', $request->user()->id)->whereHas('stories')->with('stories')->paginate(6);
+        $posts = User::latest('id')->whereIn("id", $user_ids)->whereHas('stories')->with('stories')->paginate(6);
         return response()->json([
             'status' => true,
             'code' => 200,
