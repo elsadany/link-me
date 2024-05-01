@@ -16,13 +16,8 @@ class UserFriend extends Model
         return $this->belongsTo(User::class,'user_id');
     }
     function friend(){
-        if($this->user_id==auth()->guard('sanctum')->user()->id){
+
         return $this->belongsTo(User::class,'friend_id');
-            }else{
-            return $this->belongsTo(User::class,'user_id');
-
-
-        }
 
     }
     function getChatIdAttribute(){
