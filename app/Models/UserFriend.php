@@ -26,9 +26,10 @@ class UserFriend extends Model
     }
     function getFriendObjAttribute(){
         if($this->user_id==auth()->guard('sanctum')->user()->id){
-            return 1;
+            return $this->friend;
         }else{
-            return 2;
+            return $this->user;
+
         }
     }
 }
