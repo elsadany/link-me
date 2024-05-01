@@ -9,7 +9,6 @@ class UserFriend extends Model
 {
     use HasFactory;
     protected $guarded=['id'];
-    protected $with=['user','friend'];
     protected $appends=['chat_id'];
     function user(){
 
