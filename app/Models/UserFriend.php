@@ -13,6 +13,7 @@ class UserFriend extends Model
     protected $appends=['chat_id'];
 
     function friend(){
+        dd($this->user_id,$this->friend_id,$this->id);
         if($this->user_id==auth()->guard('sanctum')->user()->id) {
             dd($this->user_id==auth()->guard('sanctum')->user()->id);
             return $this->belongsTo(User::class, 'friend_id');
