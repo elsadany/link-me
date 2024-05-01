@@ -9,18 +9,16 @@ class UserFriend extends Model
 {
     use HasFactory;
     protected $guarded=['id'];
-    protected $with=['friend'];
+    protected $with=['user','friend'];
     protected $appends=['chat_id'];
+    function user(){
 
+        return $this->belongsTo(User::class,'user_id');
+    }
     function friend(){
-        dd($this->user_id,$this->friend_id,$this->id);
-        if($this->user_id==auth()->guard('sanctum')->user()->id) {
-            dd($this->user_id==auth()->guard('sanctum')->user()->id);
-            return $this->belongsTo(User::class, 'friend_id');
-        }else {
-            dd($this->user_id,auth()->guard('sanctum')->user()->id);
-            return $this->belongsTo(User::class, 'user_id');
-        }
+        dd($this->friend_id);
+        return $this->belongsTo(User::class,'friend_id');
+
     }
     function getChatIdAttribute(){
         return optional(Chat::where(['first_user_id'=>$this->user_id,'second_user_id'=>$this->friend_id])
