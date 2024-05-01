@@ -16,10 +16,13 @@ class UserFriend extends Model
         return $this->belongsTo(User::class,'user_id');
     }
     function friend(){
-        if($this->user_id==auth()->guard('sanctum')->user()->id)
-        return $this->belongsTo(User::class,'friend_id');
-        else
-        return $this->belongsTo(User::class,'user_id');
+        if($this->user_id==auth()->guard('sanctum')->user()->id) {
+            dd(auth()->guard('sanctum')->user()->id);
+            return $this->belongsTo(User::class, 'friend_id');
+        }else {
+            dd(auth()->guard('sanctum')->user()->id);
+            return $this->belongsTo(User::class, 'user_id');
+        }
     }
     function getChatIdAttribute(){
         return optional(Chat::where(['first_user_id'=>$this->user_id,'second_user_id'=>$this->friend_id])
