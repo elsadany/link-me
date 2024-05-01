@@ -16,7 +16,7 @@ class UserFriend extends Model
         return $this->belongsTo(User::class,'user_id');
     }
     function friend(){
-        dd($this->friend_id);
+
         return $this->belongsTo(User::class,'friend_id');
 
     }

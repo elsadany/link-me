@@ -311,8 +311,11 @@ class HomeApi extends Controller
 
     function getFriends(Request $request)
     {
-        $user_friends = UserFriend::where('user_id', $request->user()->id)
-            ->orWhere('friend_id', $request->user()->id)->paginate(20);
+        $user_ids= UserFriend::where('friend_id', $request->user()->id)->pluck('id')->toArray();
+        $friends_ids= UserFriend::where('user_id', $request->user()->id)->pluck('id')->toArray();
+        $ids=array_merge($friends_ids,$user_ids);
+        $user_friends = User::where('id',$request->user()->id)->whereIn('id', $ids)
+          ->paginate(20);
         return response()->json([
             'status' => true,
             'code' => 200,
