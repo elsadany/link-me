@@ -17,7 +17,7 @@ class UserFriend extends Model
             dd($this->user_id==auth()->guard('sanctum')->user()->id);
             return $this->belongsTo(User::class, 'friend_id');
         }else {
-            dd(auth()->guard('sanctum')->user()->id);
+            dd($this->user_id,auth()->guard('sanctum')->user()->id);
             return $this->belongsTo(User::class, 'user_id');
         }
     }
