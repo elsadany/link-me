@@ -305,6 +305,16 @@ class ChatsApi extends Controller
             'data' => null
         ]);
     }
+    function EndChat(Chat $chat)
+    {
+        $chat->update(['is_ended'=>1]);
+        return response()->json([
+            'status' => true,
+            'code' => 200,
+            'message' => 'تم الحذف بنجاح',
+            'data' => null
+        ]);
+    }
 
     function deleteChat(Request $request)
     {

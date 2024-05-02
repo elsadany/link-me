@@ -71,6 +71,7 @@ Route::middleware('local')->group(function () {
         Route::post('submit-request',[\App\Http\Controllers\apis\ChatsApi::class,'sendChatRequest']);
         Route::post('chat-requests',[\App\Http\Controllers\apis\ChatsApi::class,'chats']);
         Route::post('chats/delete',[\App\Http\Controllers\apis\ChatsApi::class,'deleteChat']);
+        Route::post('end-chat/{chat}',[\App\Http\Controllers\apis\ChatsApi::class,'EndChat']);
         Route::post('one-chat',[\App\Http\Controllers\apis\ChatsApi::class,'oneChat']);
         Route::get('one-user',[\App\Http\Controllers\apis\AuthApi::class,'showUser']);
         Route::post('chat-request/accept',[\App\Http\Controllers\apis\ChatsApi::class,'accept']);
