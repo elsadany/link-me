@@ -63,11 +63,11 @@ class ChatsApi extends Controller
                 'first_user_id' => auth()->user()->id,
                 'second_user_id' => $request->user_id,
                 'is_special' => $request->is_special,
-                'type' => $request->type
+                'type' => $request->type,,'delete_from_first_user'=>1,'delete_from_second_user'=>1
 
             ]);
         elseif ($request->type == 'friend_request') {
-            $chat->update(['type' => $request->type, 'is_accepted' => 0]);
+            $chat->update(['type' => $request->type, 'is_accepted' => 0,'delete_from_first_user'=>1,'delete_from_second_user'=>1]);
             $x = 1;
         }
         $chat = Chat::find($chat->id);
