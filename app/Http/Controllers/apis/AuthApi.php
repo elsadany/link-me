@@ -134,7 +134,7 @@ class AuthApi extends Controller
         if (!is_object($user)) {
             $user = User::create([
                 'name' => 'visitor',
-                'email' => 'visitor@linke-me.live',
+                'email' => 'visitor@visitor.com',
                 'password' => Hash::make(Str::random(5)),
                 'type' => 'visitor',
                 'code'=>$request->mob_code
