@@ -162,7 +162,7 @@ class ChatsApi extends Controller
             });
         if ($request->has('name')) {
             $ids = User::where('name', 'like', '%' . $request->name . '%')->pluck('id')->toArray();
-            $chats = $chats->orWhere(function ($query) use ($request, $ids) {
+            $chats = $chats->Where(function ($query) use ($request, $ids) {
                 $query->whereIn('first_user_id', $ids)->orWhereIn('second_user_id', $ids);
             });
 
