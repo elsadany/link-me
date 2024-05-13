@@ -63,7 +63,8 @@ class ChatsApi extends Controller
                 'first_user_id' => auth()->user()->id,
                 'second_user_id' => $request->user_id,
                 'is_special' => $request->is_special,
-                'type' => $request->type,,'delete_from_first_user'=>1,'delete_from_second_user'=>1
+                'type' => $request->type,
+                'delete_from_first_user'=>1,'delete_from_second_user'=>1
 
             ]);
         elseif ($request->type == 'friend_request') {
