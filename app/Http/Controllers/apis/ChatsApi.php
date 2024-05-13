@@ -64,11 +64,12 @@ class ChatsApi extends Controller
                 'second_user_id' => $request->user_id,
                 'is_special' => $request->is_special,
                 'type' => $request->type,
-                'delete_from_first_user'=>1,'delete_from_second_user'=>1
+                'delete_from_first_user'=>0,'delete_from_second_user'=>0,
+                'is_ended'=>0
 
             ]);
         elseif ($request->type == 'friend_request') {
-            $chat->update(['type' => $request->type, 'is_accepted' => 0,'delete_from_first_user'=>1,'delete_from_second_user'=>1]);
+            $chat->update(['type' => $request->type, 'is_accepted' => 0,'delete_from_first_user'=>0,'delete_from_second_user'=>0]);
             $x = 1;
         }
         $chat = Chat::find($chat->id);
@@ -313,6 +314,7 @@ class ChatsApi extends Controller
     function EndChat(Chat $chat)
     {
         $chat->update(['is_ended' => 1,'delete_from_first_user'=>1,'delete_from_second_user'=>1]);
+        $chat->messages()->delete();
         return response()->json([
             'status' => true,
             'code' => 200,

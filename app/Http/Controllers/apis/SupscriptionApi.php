@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\StarsPrice;
 use App\Models\SupscriptionPlan;
 use App\Models\User;
+use App\Models\UserBlock;
 use App\Models\UserFriend;
 use App\Models\UsersDiamond;
 use App\Models\UsersParchase;
@@ -242,9 +243,13 @@ class SupscriptionApi extends Controller
         ]);
     }
     function topUsers(Request $request){
+        $users_ids=UserBlock::where('user_id',$request->user()->id)->pluck('friend_id')->toArray();
+        $friends_ids=UserBlock::where('friend_id',$request->user()->id)->pluck('user_id')->toArray();
+        $users_ids=array_merge($users_ids,$friends_ids);
         $users=User::join('user_stars','user_stars.user_id','users.id')
             ->where('user_stars.expired_at','>=',Carbon::now('Asia/Riyadh')->format('Y-m-d H:m:s'))
             ->latest('user_stars.expired_at')
+            ->whereNotIn('users.id',$users_ids)
             ->select('users.*')
             ->get();
         $userData=[];
