@@ -13,6 +13,7 @@ class Chat extends Model
     protected $appends=['unread','is_blocked'];
     protected $casts=[
         'is_blocked'=>'boolean',
+        'id'=>'integer'
 
     ];
     function secondUser(){
