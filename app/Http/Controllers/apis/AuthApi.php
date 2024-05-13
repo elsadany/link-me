@@ -136,7 +136,8 @@ class AuthApi extends Controller
                 'name' => 'visitor',
                 'email' => 'visitor@linke-me.live',
                 'password' => Hash::make(Str::random(5)),
-                'type' => 'visitor'
+                'type' => 'visitor',
+                'code'=>$request->mob_code
 
             ]);
             $user->update(['user_name' => 'user' . $user->id,
