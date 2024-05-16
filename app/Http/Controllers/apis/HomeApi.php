@@ -105,7 +105,7 @@ class HomeApi extends Controller
     function addStory(Request $request)
     {
         $request->validate([
-            'video' => 'required|file|mimes:mp4,mov,ogg,qt,jpg,jpeg,png,bmp,tiff|max:6120 ',
+            'video' => 'required|file|mimes:mp4,mov,ogg,qt,jpg,jpeg,png,bmp,tiff|max:15120 ',
             'text' => 'sometimes'
         ]);
         $user = $request->user();

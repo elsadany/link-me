@@ -71,7 +71,7 @@ class ChatsApi extends Controller
                 'is_ended'=>0
 
             ]);
-        elseif ($request->type == 'friend_request') {
+        else{
             $chat->update([ 'first_user_id' => auth()->user()->id,
                 'second_user_id' => $request->user_id,'type' => $request->type, 'is_accepted' => 0,'delete_from_first_user'=>0,'delete_from_second_user'=>0]);
             $x = 1;
@@ -82,9 +82,7 @@ class ChatsApi extends Controller
             $chat->is_accepted
         ));
         if ($request->type != 'home') {
-            $second_user = User::find($chat->second_user_id);
-            if ($request->user()->id == $chat->second_user_id)
-                $second_user = User::find($chat->first_user_id);
+            $second_user = User::find($request->user_id);
 
             event(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك', ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
             if($chat_request==1)
