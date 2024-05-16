@@ -192,7 +192,7 @@ class ChatsApi extends Controller
             $messages = $messages->where('delete_from_first_user', 0);
         elseif ($chats->second_user_id == $request->user()->id)
             $messages = $messages->where('delete_from_second_user', 0);
-        $messages = $messages->paginate(10);
+        $messages = $messages->paginate(20);
         $chats->messages()->where('sender_id', '!=', $request->user()->id)->update(['read' => 1]);
         return response()->json([
             'status' => true,
