@@ -37,7 +37,7 @@ class User extends Authenticatable
     {
         if ($this->image != '')
             return url($this->image);
-        return 'https://www.w3schools.com/w3css/img_avatar2.png';
+        return url('Group3336.png');
     }
 
     function getIsProfileCompletedAttribute()
