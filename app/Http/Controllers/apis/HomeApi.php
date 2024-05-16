@@ -276,6 +276,10 @@ class HomeApi extends Controller
             'user_id' => $request->user()->id,
             'friend_id' => $request->user_id
         ]);
+        $friend = UserFriend::where(['user_id' => auth()->user()->id, 'friend_id' => $request->user_id])
+            ->orWhere(function ($query) use ($request) {
+                $query->where(['friend_id' => $request->user()->id, 'user_id' => $request->user_id]);
+            })->delete();
         $chat = Chat::where(['first_user_id' => auth()->user()->id, 'second_user_id' => $request->user_id])
             ->orWhere(function ($query) use ($request) {
                 $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $request->user_id]);
