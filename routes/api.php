@@ -32,6 +32,7 @@ Route::middleware('local')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('myaccount', [\App\Http\Controllers\apis\AuthApi::class, 'myaccount']);
+        Route::get('logout', [\App\Http\Controllers\apis\AuthApi::class, 'logout']);
         Route::get('mynotifications', [\App\Http\Controllers\apis\AuthApi::class, 'notifications']);
         Route::post('notifications/delete', [\App\Http\Controllers\apis\AuthApi::class, 'deleteNotification']);
         Route::post('notifications/read', [\App\Http\Controllers\apis\AuthApi::class, 'readNotification']);

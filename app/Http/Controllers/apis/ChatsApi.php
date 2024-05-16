@@ -69,7 +69,8 @@ class ChatsApi extends Controller
 
             ]);
         elseif ($request->type == 'friend_request') {
-            $chat->update(['type' => $request->type, 'is_accepted' => 0,'delete_from_first_user'=>0,'delete_from_second_user'=>0]);
+            $chat->update([ 'first_user_id' => auth()->user()->id,
+                'second_user_id' => $request->user_id,'type' => $request->type, 'is_accepted' => 0,'delete_from_first_user'=>0,'delete_from_second_user'=>0]);
             $x = 1;
         }
         $chat = Chat::find($chat->id);
