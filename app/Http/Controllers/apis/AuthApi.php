@@ -626,6 +626,7 @@ class AuthApi extends Controller
         ]);
     }
     function updateFcmToken(Request $request){
+        User::where(['fcm_token'=>$request->fcm_token])->update(['fcm_token'=>null]);
         $user=$request->user();
         $user->fcm_token=$request->fcm_tokon;
         $user->save();
