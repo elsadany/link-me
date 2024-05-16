@@ -226,6 +226,12 @@ class AuthApi extends Controller
             'message' => ''
         ]);
     }
+    function logout(Request $request){
+        $user=$request->user();
+        $user->update(['fcm_token'=>null]);
+        $user->tokens()->delete();
+
+    }
 
     public function forgotPassword(Request $request)
     {
