@@ -17,6 +17,7 @@ use App\Models\StoriesLike;
 use App\Models\StoriesReport;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\UserBlock;
 use App\Models\UserFriend;
 use App\Models\UsersStory;
 use Carbon\Carbon;
@@ -45,7 +46,6 @@ class ChatsApi extends Controller
                 'message' => 'لا يمكن ارسال طلب لنفسك '
             ]);
         $user = $request->user();
-        $user->update(['number_of_request' => $user->number_of_request + 1]);
         if ($request->user()->type == 'visitor' && $user->number_of_request > 4) {
             return response()->json([
                 'status' => false,
@@ -53,6 +53,7 @@ class ChatsApi extends Controller
                 'message' => 'لقد استزفت عدد الطلبات الخاص بك '
             ]);
         }
+        $user->update(['number_of_request' => $user->number_of_request + 1]);
         $chat = Chat::where(['first_user_id' => auth()->user()->id, 'second_user_id' => $request->user_id])
             ->orWhere(function ($query) use ($request) {
                 $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $request->user_id]);
@@ -219,6 +220,14 @@ class ChatsApi extends Controller
         $reciever = User::find($chat->first_user_id);
         if ($chat->first_user_id == $request->user()->id)
             $reciever = User::find($chat->second_user_id);
+        $ids = UserBlock::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
+        $ids=array_merge(UserBlock::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
+        if(in_array($reciever->id,$ids))
+            return response()->json([
+                'status' => true,
+                'code' => 200,
+                'data' => $chat->toArray()
+            ]);
 
         $chat->updated_at = Carbon::now('Asia/Riyadh');
         $chat->save();
@@ -244,6 +253,7 @@ class ChatsApi extends Controller
             $message->one_time
 
         ));
+
     $chat=Chat::find($chat->id);
         event(new SendFcmNotificationEvent([$reciever->fcm_token], 'تم ارسال رسالة لك', 'تم ارسال رسالة لك',
             ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'reciever_id' => $reciever->id, 'message' => $request->message, 'is_accepted' => $chat->is_accepted, 'type' => 'chat',

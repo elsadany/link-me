@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\apis;
 
 use App\Models\AppSetting;
+use App\Models\Chat;
 use App\Models\Contact;
 use App\Models\Country;
 use App\Models\DeleteReason;
@@ -275,6 +276,11 @@ class HomeApi extends Controller
             'user_id' => $request->user()->id,
             'friend_id' => $request->user_id
         ]);
+        $chat = Chat::where(['first_user_id' => auth()->user()->id, 'second_user_id' => $request->user_id])
+            ->orWhere(function ($query) use ($request) {
+                $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $request->user_id]);
+            })->first();
+        $chat->update(['is_ended'=>1]);
         return response()->json([
             'status' => true,
             'code' => 200,

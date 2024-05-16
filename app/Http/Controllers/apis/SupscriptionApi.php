@@ -267,7 +267,7 @@ class SupscriptionApi extends Controller
 
         }
 
-        $users=User::where('type','user')->limit(15-$users->count())->inRandomOrder()->get();
+        $users=User::where('type','user')->whereNotIn('users.id',$users_ids)->limit(15-$users->count())->inRandomOrder()->get();
 
 
         foreach ($users as $key=>$user){
