@@ -42,8 +42,8 @@ class StarsPricesApi extends Controller
     }
     function update(StarsPrice $starPrice,Request $request){
         $request->validate([
-            'title_ar' => 'required|unique:products,title_ar,'.$starsPrice->id,
-            'title_en' => 'required|unique:products,title_en,'.$starsPrice->id,
+            'title_ar' => 'required|unique:products,title_ar,'.$starPrice->id,
+            'title_en' => 'required|unique:products,title_en,'.$starPrice->id,
             'diamonds'=>'required|numeric',
             'hours'=>'required|numeric',
 
