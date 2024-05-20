@@ -24,11 +24,16 @@ Route::get('create-admin',function (){
 });
 Route::prefix('admin')->group(function () {
     Route::post('login',[\App\Http\Controllers\apis\admin\AuthApi::class,'login']);
+    Route::post('forget-password', [\App\Http\Controllers\apis\admin\AuthApi::class, 'forgotPassword']);
+    Route::post('reset-password', [\App\Http\Controllers\apis\admin\AuthApi::class, 'resetPassword']);
     Route::middleware('auth:admin')->group(function (){
        Route::get('my-account',[\App\Http\Controllers\apis\admin\AuthApi::class,'myaccount']);
        Route::post('update-profile',[\App\Http\Controllers\apis\admin\AuthApi::class,'updateProfile']);
        Route::post('update-password',[\App\Http\Controllers\apis\admin\AuthApi::class,'updatePassword']);
+       Route::get('countries/toggle-active/{country}',[\App\Http\Controllers\apis\admin\CountriesApi::class,'toggleActive']);
+       Route::get('users/toggle-active/{user}',[\App\Http\Controllers\apis\admin\UsersApi::class,'toggleActive']);
        Route::apiResource('countries',\App\Http\Controllers\apis\admin\CountriesApi::class);
+       Route::apiResource('admins',\App\Http\Controllers\apis\admin\AdminController::class);
        Route::apiResource('delete-reasons',\App\Http\Controllers\apis\admin\DeleteReasonsApi::class);
        Route::apiResource('products',\App\Http\Controllers\apis\admin\ProductsApi::class);
        Route::apiResource('star-prices',\App\Http\Controllers\apis\admin\StarsPricesApi::class);

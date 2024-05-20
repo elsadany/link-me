@@ -7,7 +7,11 @@ use App\Models\Country;
 class CountriesApi extends Controller
 {
     function index(Request $request){
-        $countries=Country::oldest('country_enName')->paginate(20);
+        $countries=Country::oldest('country_enName');
+        if($request->has('search'))
+            $countries=$countries->where('country_enName','regexp',$request->search)
+                ->orWhere('country_arName','regexp',$request->search);
+            $countries=$countries->paginate(20);
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -66,6 +70,17 @@ class CountriesApi extends Controller
             'status'=>true,
             'code'=>200,
             'message'=>'تم الحذف بنجاح'
+        ]);
+    }
+    function toggleActive(Country $country){
+        if($country->is_active==1)
+            $country->update(['is_active'=>0]);
+        else
+            $country->update(['is_active'=>1]);
+        return response()->json([
+            'status'=>true,
+            'code'=>200,
+            'message'=>'تم التعديل بنجاح'
         ]);
     }
 }

@@ -362,7 +362,96 @@ class AuthApi extends Controller
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $users->toArray()
+            'data' => $user->toArray()
         ]);
     }
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email'],
+            [
+                [
+                    'email.required' => __('auth.email_required'),
+                    'email.email' => __('auth.email_invalid'),
+                ]
+            ]);
+
+        $user = Admin::whereEmail($request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'code' => 400,
+                'message' => __('auth.email_not_found')
+            ]);
+        }
+
+        $code = EmailCode::whereEmail($request->email)->delete();
+        EmailCode::create([
+            'email' => $request->email,
+            'code' => '5555'
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'code' => 200,
+            'message' => __('auth.sent_successfully'),
+            'data' => null
+
+        ]);
+
+    }
+
+    public function resetPassword(Request $request)
+    {
+
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required',
+            'password' => 'required',
+            'confirm-password' => 'required|same:password',
+        ],
+            [
+                'email.required' => __('auth.email_required'),
+                'password.required' => __('auth.password_required'),
+                'confirm_password.required' => __('auth.confirm_password_required'),
+                'confirm_password.same' => __('auth.confirm_password_same'),
+                'email.email' => __('auth.email_invalid'),
+                'code.required' => __('auth.code_required'),
+            ]);
+        $code = EmailCode::where('email', $request->email)->where('code', $request->code)->first();
+        if (!is_object($code))
+            return response()->json([
+                'status' => false,
+                'code' => 400,
+                'message' => __('auth.code_wrong'),
+                'data' => null
+
+            ]);
+        $user = Admin::where('email', $request->email)
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'code' => 400,
+                'message' => __('auth.email_not_found'),
+                'data' => null
+
+            ]);
+        }
+
+        $user->password = Hash::make($request->password);
+
+
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'code' => 200,
+            'message' => __('auth.password_reset'),
+            'data' => null
+
+        ]);
+    }
+
 }
