@@ -8,7 +8,7 @@ class CountriesApi extends Controller
 {
     function index(Request $request){
         $countries=Country::oldest('country_enName');
-        if($request->has('search'))
+        if($request->search!='')
             $countries=$countries->where('country_enName','regexp',$request->search)
                 ->orWhere('country_arName','regexp',$request->search);
             $countries=$countries->paginate(20);
