@@ -47,8 +47,9 @@ class UsersApi extends Controller
     }
     function update(User $user,Request $request){
         $request->validate([
-            'first_name'=>'required',
-            'last_name'=>'required',
+            'name'=>'required',
+            'birth_date'=>'required',
+
             'email'=>'required|unique:users,email,'.$user->id,
             'user_name'=>'required|unique:users,email,'.$user->id,
             'gander'=>'required|in:male,female',
@@ -56,8 +57,8 @@ class UsersApi extends Controller
         ]);
 
         $user->update([
-            'first_name'=>$request->first_name,
-            'last_name'=>$request->last_name,
+            'name'=>$request->name,
+            'birth_date'=>$request->birth_date,
             'user_name'=>$request->user_name,
             'email'=>$request->email,
             'gander'=>$request->gander,
