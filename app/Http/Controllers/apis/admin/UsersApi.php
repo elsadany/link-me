@@ -32,7 +32,13 @@ class UsersApi extends Controller
             'data'=>$reasons->toArray()
         ]);
     }
-
+function show(User $user){
+    return response()->json([
+        'status'=>true,
+            'code'=>200,
+            'data'=>$user->toArray()
+        ]);
+}
     function destroy(Request $request,User $user){
         $user->delete();
         return response()->json([
