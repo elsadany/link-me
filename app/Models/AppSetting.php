@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AppSetting extends Model
 {
     use HasFactory;
+    public $timestamps=false;
     protected $appends=['about','privacy','terms'];
     function getAboutAttribute()
     {

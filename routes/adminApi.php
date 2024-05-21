@@ -33,6 +33,9 @@ Route::prefix('admin')->group(function () {
        Route::get('countries/toggle-active/{country}',[\App\Http\Controllers\apis\admin\CountriesApi::class,'toggleActive']);
        Route::get('users/toggle-active/{user}',[\App\Http\Controllers\apis\admin\UsersApi::class,'toggleActive']);
        Route::apiResource('countries',\App\Http\Controllers\apis\admin\CountriesApi::class);
+       Route::apiResource('tickets',\App\Http\Controllers\apis\admin\TicketsApi::class);
+       Route::apiResource('contacts',\App\Http\Controllers\apis\admin\ContactsApi::class);
+       Route::apiResource('settings',\App\Http\Controllers\apis\admin\SettingsApi::class);
        Route::apiResource('admins',\App\Http\Controllers\apis\admin\AdminController::class);
        Route::apiResource('delete-reasons',\App\Http\Controllers\apis\admin\DeleteReasonsApi::class);
        Route::apiResource('products',\App\Http\Controllers\apis\admin\ProductsApi::class);

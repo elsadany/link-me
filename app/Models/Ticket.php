@@ -9,4 +9,7 @@ class Ticket extends Model
 {
     use HasFactory;
     protected $guarded=['id'];
+    function replies(){
+        return $this->hasMany(TicketsReply::class,'ticket_id');
+    }
 }

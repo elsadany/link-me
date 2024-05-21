@@ -21,5 +21,8 @@ class Admin extends Authenticatable
      */
     protected $guarded=['id'];
     protected $hidden=['password'];
-
+    public function ticketReplies()
+    {
+        return $this->morphMany(TicketReplay::class, 'replaibale');
+    }
 }
