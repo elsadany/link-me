@@ -46,6 +46,15 @@ class ChatsApi extends Controller
                 'message' => 'لا يمكن ارسال طلب لنفسك '
             ]);
         $user = $request->user();
+        $second_user = User::find($request->user_id);
+        if (($request->user()->type == 'visitor'||$second_user->type=='visitor') && $request->type=='friend_request') {
+            return response()->json([
+                'status' => false,
+                'code' => 400,
+                'message' => 'لا يمكنك ارسال طلب صداقه '
+            ]);
+        }
+
         if ($request->user()->type == 'visitor' && $user->number_of_request > 4) {
             return response()->json([
                 'status' => false,
@@ -83,7 +92,7 @@ class ChatsApi extends Controller
             $chat->is_accepted
         ));
         if ($request->type != 'home') {
-            $second_user = User::find($request->user_id);
+
 
             event(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك من'.$request->user()->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
             if($chat_request==1)
