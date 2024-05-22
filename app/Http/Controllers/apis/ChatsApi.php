@@ -132,7 +132,7 @@ class ChatsApi extends Controller
             $chat->is_accepted
         ));
 
-        if ($chat->type == 'friend_request')
+        if (in_array($chat->type, [ 'friend_request','home']))
             $chat->update(['expire_at' => null]);
         if ($chat->type == 'friend_request')
             event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك من طرف' . $chat->firstUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_accepted'], 'acceptOrReject'));
@@ -157,7 +157,7 @@ class ChatsApi extends Controller
             $chat->id,
             $chat->is_accepted
         ));
-        if ($chat->type == 'friend_request')
+//        if ($chat->type == 'friend_request')
             event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', ' تم رفض الطلب الخاص بك من طرف' . $chat->firstUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_rejected'], 'acceptOrReject'));
 
         return response()->json([
