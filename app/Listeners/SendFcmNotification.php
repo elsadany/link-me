@@ -29,7 +29,7 @@ class SendFcmNotification
         $notification = [
             'title' => $event->title,
             // 'body'=>$event->message??'',
-            'body' => $event->category,
+            'body' => $event->message,
             'sound' => true,
             'category'=>$event->category
         ];
