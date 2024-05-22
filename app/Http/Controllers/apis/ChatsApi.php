@@ -231,8 +231,9 @@ class ChatsApi extends Controller
         $reciever = User::find($chat->first_user_id);
         if ($chat->first_user_id == $request->user()->id)
             $reciever = User::find($chat->second_user_id);
-        $ids = UserBlock::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
-        $ids = array_merge(UserBlock::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
+        $ids[] = UserBlock::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
+        $ids[] = array_merge(UserBlock::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
+        dd($ids);
         if (in_array($reciever->id, $ids)||in_array($request->user()->id,$ids))
             return response()->json([
                 'status' => true,
