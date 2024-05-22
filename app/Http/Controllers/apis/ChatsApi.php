@@ -47,7 +47,7 @@ class ChatsApi extends Controller
             ]);
         $user = $request->user();
         $second_user = User::find($request->user_id);
-        if (($request->user()->type == 'visitor'||$second_user->type=='visitor') && $request->type=='friend_request') {
+        if (($request->user()->type == 'visitor' || $second_user->type == 'visitor') && $request->type == 'friend_request') {
             return response()->json([
                 'status' => false,
                 'code' => 400,
@@ -68,22 +68,22 @@ class ChatsApi extends Controller
                 $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $request->user_id]);
             })->first();
         $x = 0;
-        $chat_request=1;
-        if(is_object($chat)&&$chat->type=='home')
-            $chat_request=0;
+        $chat_request = 1;
+        if (is_object($chat) && $chat->type == 'home')
+            $chat_request = 0;
         if (!is_object($chat))
             $chat = Chat::create([
                 'first_user_id' => auth()->user()->id,
                 'second_user_id' => $request->user_id,
                 'is_special' => $request->is_special,
                 'type' => $request->type,
-                'delete_from_first_user'=>0,'delete_from_second_user'=>0,
-                'is_ended'=>0
+                'delete_from_first_user' => 0, 'delete_from_second_user' => 0,
+                'is_ended' => 0
 
             ]);
-        else{
-            $chat->update([ 'first_user_id' => auth()->user()->id,
-                'second_user_id' => $request->user_id,'type' => $request->type, 'is_accepted' => 0,'delete_from_first_user'=>0,'delete_from_second_user'=>0]);
+        else {
+            $chat->update(['first_user_id' => auth()->user()->id,
+                'second_user_id' => $request->user_id, 'type' => $request->type, 'is_accepted' => 0, 'delete_from_first_user' => 0, 'delete_from_second_user' => 0]);
             $x = 1;
         }
         $chat = Chat::find($chat->id);
@@ -94,9 +94,9 @@ class ChatsApi extends Controller
         if ($request->type != 'home') {
 
 
-            event(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك من'.$request->user()->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
-            if($chat_request==1)
-            $chat->update(['expire_at' => strtotime(Carbon::now('Asia/Riyadh')->addMinutes(10)) * 1000, 'is_sent' => 1]);
+            event(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك من' . $request->user()->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type]));
+            if ($chat_request == 1)
+                $chat->update(['expire_at' => strtotime(Carbon::now('Asia/Riyadh')->addMinutes(10)) * 1000, 'is_sent' => 1]);
         }
         return response()->json([
             'status' => true,
@@ -116,10 +116,10 @@ class ChatsApi extends Controller
         $chat->save();
         if ($chat->type == 'friend_request') {
             $user_friend = UserFriend::where(['user_id' => $chat->first_user_id, 'friend_id' => $chat->second_user_id])
-                    ->orWhere(function ($q) use ($chat){
+                ->orWhere(function ($q) use ($chat) {
                     $q->where(['user_id' => $chat->second_user_id, 'friend_id' => $chat->first_user_id]);
 
-                    })->first();
+                })->first();
             if (!is_object($user_friend)) {
                 UserFriend::create([
                     'user_id' => $chat->first_user_id, 'friend_id' => $chat->second_user_id
@@ -135,7 +135,7 @@ class ChatsApi extends Controller
         if ($chat->type == 'friend_request')
             $chat->update(['expire_at' => null]);
         if ($chat->type == 'friend_request')
-            event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك من طرف'.$chat->firstUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_accepted'], 'acceptOrReject'));
+            event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك من طرف' . $chat->firstUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_accepted'], 'acceptOrReject'));
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -158,7 +158,7 @@ class ChatsApi extends Controller
             $chat->is_accepted
         ));
         if ($chat->type == 'friend_request')
-            event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', ' تم رفض الطلب الخاص بك من طرف'.$chat->firstUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_rejected'],'acceptOrReject'));
+            event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', ' تم رفض الطلب الخاص بك من طرف' . $chat->firstUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_rejected'], 'acceptOrReject'));
 
         return response()->json([
             'status' => true,
@@ -170,11 +170,13 @@ class ChatsApi extends Controller
 
     function chats(Request $request)
     {
-        $chats = Chat::where(['first_user_id' => auth()->user()->id, 'delete_from_first_user' => 0])
-            ->orWhere(function ($query) use ($request) {
-                $query->where(['second_user_id' => $request->user()->id, 'delete_from_second_user' => 0]);
-            });
-        if ($request->name!='') {
+        $chats = Chat::where(function ($q) use ($request) {
+            $q->where(['first_user_id' => auth()->user()->id, 'delete_from_first_user' => 0])
+                ->orWhere(function ($query) use ($request) {
+                    $query->where(['second_user_id' => $request->user()->id, 'delete_from_second_user' => 0]);
+                });
+        });
+        if ($request->name != '') {
             $ids = User::where('name', 'like', '%' . $request->name . '%')->pluck('id')->toArray();
             dd($ids);
             $chats = $chats->where(function ($query) use ($request, $ids) {
@@ -231,8 +233,8 @@ class ChatsApi extends Controller
         if ($chat->first_user_id == $request->user()->id)
             $reciever = User::find($chat->second_user_id);
         $ids = UserBlock::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
-        $ids=array_merge(UserBlock::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
-        if(in_array($reciever->id,$ids))
+        $ids = array_merge(UserBlock::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
+        if (in_array($reciever->id, $ids))
             return response()->json([
                 'status' => true,
                 'code' => 200,
@@ -264,7 +266,7 @@ class ChatsApi extends Controller
 
         ));
 
-    $chat=Chat::find($chat->id);
+        $chat = Chat::find($chat->id);
         event(new SendFcmNotificationEvent([$reciever->fcm_token], 'تم ارسال رسالة لك', 'تم ارسال رسالة لك',
             ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'reciever_id' => $reciever->id, 'message' => $request->message, 'is_accepted' => $chat->is_accepted, 'type' => 'chat',
                 'chat_message_type' => $request->type, 'media_type' => $request->media_type, 'file' => $message->filePath, 'one_time' => $message->one_time]));
