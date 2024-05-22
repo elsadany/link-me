@@ -328,7 +328,7 @@ class ChatsApi extends Controller
 
     function EndChat(Chat $chat)
     {
-        $chat->update(['is_ended' => 1,'delete_from_first_user'=>1,'delete_from_second_user'=>1]);
+        $chat->delete();
         $chat->messages()->delete();
         return response()->json([
             'status' => true,
