@@ -174,9 +174,10 @@ class ChatsApi extends Controller
             ->orWhere(function ($query) use ($request) {
                 $query->where(['second_user_id' => $request->user()->id, 'delete_from_second_user' => 0]);
             });
-        if ($request->has('name')) {
+        if ($request->name!='') {
             $ids = User::where('name', 'like', '%' . $request->name . '%')->pluck('id')->toArray();
-            $chats = $chats->Where(function ($query) use ($request, $ids) {
+            dd($ids);
+            $chats = $chats->where(function ($query) use ($request, $ids) {
                 $query->whereIn('first_user_id', $ids)->orWhereIn('second_user_id', $ids);
             });
 
