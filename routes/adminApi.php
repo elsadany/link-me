@@ -31,6 +31,7 @@ Route::prefix('admin')->group(function () {
        Route::post('update-profile',[\App\Http\Controllers\apis\admin\AuthApi::class,'updateProfile']);
        Route::post('update-password',[\App\Http\Controllers\apis\admin\AuthApi::class,'updatePassword']);
        Route::get('countries/toggle-active/{country}',[\App\Http\Controllers\apis\admin\CountriesApi::class,'toggleActive']);
+       Route::get('contacts/toggle-read/{contact}',[\App\Http\Controllers\apis\admin\ContactsApi::class,'toggleRead']);
        Route::get('users/toggle-active/{user}',[\App\Http\Controllers\apis\admin\UsersApi::class,'toggleActive']);
        Route::apiResource('countries',\App\Http\Controllers\apis\admin\CountriesApi::class);
        Route::apiResource('tickets',\App\Http\Controllers\apis\admin\TicketsApi::class);

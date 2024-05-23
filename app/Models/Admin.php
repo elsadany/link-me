@@ -23,6 +23,6 @@ class Admin extends Authenticatable
     protected $hidden=['password'];
     public function ticketReplies()
     {
-        return $this->morphMany(TicketReplay::class, 'replaibale');
+        return $this->morphMany(TicketsReply::class, 'replaibale');
     }
 }

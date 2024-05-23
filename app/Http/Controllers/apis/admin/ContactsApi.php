@@ -19,11 +19,11 @@ class ContactsApi extends Controller
             'data'=>$tickets->toArray()
         ]);
     }
-    function show(Request $request,Ticket $ticket){
+    function show(Request $request,Contact $contact){
         return response()->json([
             'status'=>true,
             'code'=>200,
-            'data'=>Ticket::where('id',$ticket->id)->with('replies')->first()->toArray()
+            'data'=>$contact->toArray()
         ]);
     }
 
@@ -43,19 +43,17 @@ class ContactsApi extends Controller
             'message'=>'تم أضافة الرد بنجاح'
         ]);
     }
-    function destroy(Request $request,Ticket $ticket){
-        $ticket->delete();
+    function destroy(Request $request,Contact $contact){
+        $contact->delete();
         return response()->json([
             'status'=>true,
             'code'=>200,
             'message'=>'تم الحذف بنجاح'
         ]);
     }
-    function toggleActive(Country $country){
-        if($country->is_active==1)
-            $country->update(['is_active'=>0]);
-        else
-            $country->update(['is_active'=>1]);
+    function toggleRead(Contact $contact){
+
+            $contact->update(['is_read'=>1]);
         return response()->json([
             'status'=>true,
             'code'=>200,
