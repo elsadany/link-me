@@ -3,6 +3,7 @@ namespace App\Http\Controllers\apis\admin;
 use App\Http\Controllers\Controller;
 use App\Models\DeleteReason;
 use App\Models\Product;
+use App\Models\StoriesReport;
 use App\Models\User;
 use App\Models\UsersStory;
 use Illuminate\Http\Request;
@@ -18,7 +19,22 @@ class UsersStoriesApi extends Controller
             'data'=>$reasons->toArray()
         ]);
     }
-
+    function reports(Request $request){
+    $reports=StoriesReport::with(['story','user'])->paginate(20);
+        return response()->json([
+            'status'=>true,
+            'code'=>200,
+            'data'=>$reports->toArray()
+        ]);
+    }
+    function toggleActive(Request $request,UsersStory $usersStory){
+        $usersStory->update(['is_active'=>$usersStory->is_active==1?0:1]);
+        return response()->json([
+            'status'=>true,
+            'code'=>200,
+            'message'=>'success'
+        ]);
+    }
     function destroy(Request $request,UsersStory $usersStory){
         $usersStory->delete();
         return response()->json([

@@ -197,6 +197,8 @@ class ChatsApi extends Controller
             'chat_id' => 'required|exists:chats,id'
         ]);
         $chats = Chat::findOrFail($request->chat_id);
+        if($request->type=='home')
+            $chats->update(['type'=>'home']);
 
         $messages = $chats->messages();
         if ($chats->first_user_id == $request->user()->id)

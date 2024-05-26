@@ -44,6 +44,8 @@ Route::prefix('admin')->group(function () {
        Route::apiResource('supscription-plans',\App\Http\Controllers\apis\admin\SupscriptionsPlansApi::class);
        Route::apiResource('users',\App\Http\Controllers\apis\admin\UsersApi::class);
        Route::apiResource('purchases',\App\Http\Controllers\apis\admin\PurchasesApi::class);
+       Route::get('user-stories-reports',[\App\Http\Controllers\apis\admin\UsersStoriesApi::class,'reports']);
+       Route::get('user-stories/toggle-acitve/{user_story}',[\App\Http\Controllers\apis\admin\UsersStoriesApi::class,'toggleActive']);
        Route::apiResource('users-stories',\App\Http\Controllers\apis\admin\UsersStoriesApi::class);
     });
 });
