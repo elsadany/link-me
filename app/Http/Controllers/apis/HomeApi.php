@@ -124,11 +124,12 @@ class HomeApi extends Controller
 
     function getStories(Request $request)
     {
-        $stories = User::latest('id')->with('stories')->whereHas('stories')->paginate(12);
         $user_ids = UserFriend::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
         $user_ids = array_merge($user_ids, UserFriend::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
+        $user_blocks=UserBlock::where('user_id',$request->user()->id)->pluck('friend_id')->toArray();
         $user_ids=array_merge([$request->user()->id],$user_ids);
-        $posts = User::latest('id')->whereIn("id", $user_ids)->with('stories')->whereHas('stories')->paginate(12);
+        $stories = User::latest('id')->whereNotIn('id',$user_ids)->with('stories')->whereHas('stories')->paginate(12);
+        $posts = User::latest('id')->whereNotIn('id',$user_ids)->whereIn("id", $user_ids)->with('stories')->whereHas('stories')->paginate(12);
         return response()->json([
             'status' => true,
             'code' => 200,
