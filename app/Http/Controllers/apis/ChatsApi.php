@@ -61,6 +61,12 @@ class ChatsApi extends Controller
                 'code' => 400,
                 'message' => 'لقد استزفت عدد الطلبات الخاص بك '
             ]);
+        }      if ($request->user()->type == 'visitor' && $second_user->is_link == 0) {
+            return response()->json([
+                'status' => false,
+                'code' => 400,
+                'message' => 'لا يمكن ارسال طلب لهذا المستخدم '
+            ]);
         }
         $user->update(['number_of_request' => $user->number_of_request + 1]);
         $chat = Chat::where(['first_user_id' => auth()->user()->id, 'second_user_id' => $request->user_id])
@@ -198,7 +204,7 @@ class ChatsApi extends Controller
         ]);
         $chats = Chat::findOrFail($request->chat_id);
         if($request->type=='home')
-            $chats->update(['type'=>'home']);
+            $chats->update(['type'=>'home','expire_at'=>null]);
 
         $messages = $chats->messages();
         if ($chats->first_user_id == $request->user()->id)
