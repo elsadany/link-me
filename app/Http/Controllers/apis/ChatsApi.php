@@ -68,7 +68,7 @@ class ChatsApi extends Controller
                 'message' => 'لا يمكن ارسال طلب لهذا المستخدم '
             ]);
         }
-        $user->update(['number_of_request' => $user->number_of_request + 1]);
+
         $chat = Chat::where(['first_user_id' => auth()->user()->id, 'second_user_id' => $request->user_id])
             ->orWhere(function ($query) use ($request) {
                 $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $request->user_id]);
@@ -237,6 +237,10 @@ class ChatsApi extends Controller
             $request->validate(['media' => 'max:30720']);
         $chat = Chat::find($request->chat_id);
         $reciever = User::find($chat->first_user_id);
+        if($chat->is_counted==0){
+            $reciever->update(['number_of_request' => $reciever->number_of_request + 1]);
+            $chat->update(['is_counted'=>1]);
+        }
         if ($chat->first_user_id == $request->user()->id)
             $reciever = User::find($chat->second_user_id);
         $ids = UserBlock::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
