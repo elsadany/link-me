@@ -47,6 +47,17 @@ Route::get('privacy',function (\Illuminate\Http\Request $request){
     return view('welcome',$data);
 
 });
+Route::get('about_start',function (\Illuminate\Http\Request $request){
+    if($request->get('locale')=='ar'){
+        app()->setLocale('ar');
+    }else{
+        app()->setLocale('en');
+    }
+   $setting=\App\Models\AppSetting::first();
+   $data['content']=$setting->aboutStar;
+    return view('welcome',$data);
+
+});
 Route::get('broadcast',function (){
    return \App\Events\Hello::dispatch();
 });

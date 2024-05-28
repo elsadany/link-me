@@ -31,5 +31,12 @@ class AppSetting extends Model
             return $this->terms_ar;
         return $this->terms_en;
     }
+    function getAboutStarAttribute()
+    {
+
+        if (app()->isLocale('ar'))
+            return $this->about_star_ar;
+        return $this->about_star_en;
+    }
 
 }
