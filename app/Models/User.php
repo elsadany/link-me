@@ -101,7 +101,8 @@ class User extends Authenticatable
 
     function getFollowersAttribute()
     {
-
+        if($this->can_see_followers==0)
+            return 0;
         return UserFriend::where( 'friend_id' ,$this->id)
             ->orWhere('user_id' , $this->id)->count();
 
@@ -140,11 +141,15 @@ class User extends Authenticatable
         return $this->hasMany(UserBlock::class,'user_id');
     }
     function getLinksAttribute(){
+        if($this->can_see_links==0)
+            return 0;
         return Chat::where('is_accepted',1)->where(function ($query){
             $query->where('first_user_id',$this->id)->orWhere('second_user_id',$this->id);
         })->count();
     }
     function getLikesAttribute(){
+        if($this->can_see_likes==0)
+            return 0;
         $x=0;
         foreach ($this->stories as $one){
             $x +=$one->likes;
