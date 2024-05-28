@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,10 @@ class ApiLocale
             app()->setLocale('ar');
         }else{
             app()->setLocale('en');
+        }
+        if(auth()->guard('sanctum')->check()){
+            $user=auth()->guard('sanctum')->user();
+            $user->update(['last_availablity'=>Carbon::now()]);
         }
         return $next($request);
     }
