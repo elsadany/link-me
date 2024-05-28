@@ -47,7 +47,7 @@ Route::get('privacy',function (\Illuminate\Http\Request $request){
     return view('welcome',$data);
 
 });
-Route::get('about_start',function (\Illuminate\Http\Request $request){
+Route::get('about_star',function (\Illuminate\Http\Request $request){
     if($request->get('locale')=='ar'){
         app()->setLocale('ar');
     }else{
