@@ -156,7 +156,7 @@ class User extends Authenticatable
         }
         return $x;
     }
-    function getLastSeenAttibute(){
+    function getLastSeenAttribute(){
         \Carbon\Carbon::setLocale(app()->getLocale());
         return Carbon::parse($this->last_availablity)->diffForHumans();
     }
