@@ -38,7 +38,7 @@ class User extends Authenticatable
         if ($this->image != '')
             return url($this->image);
         if($this->type=='visitor')
-            return url('Group63361.svg');
+            return url('Group3336@3x.png');
         return 'https://www.w3schools.com/w3css/img_avatar2.png';
     }
 
