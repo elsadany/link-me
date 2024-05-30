@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DeleteReason;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\UserReport;
 use Illuminate\Http\Request;
 use App\Models\Country;
 use Illuminate\Support\Facades\Hash;
@@ -93,6 +94,14 @@ class UsersApi extends Controller
             'status' => true,
             'code' => 200,
             'message' => 'تم التعديل بنجاح'
+        ]);
+    }
+    function reports(Request $request){
+        $reports=UserReport::with(['user','friend'])->paginate(20);
+        return response()->json([
+            'status' => true,
+            'code' => 200,
+            'data' => $reports->toArray()
         ]);
     }
 }

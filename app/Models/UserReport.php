@@ -9,4 +9,10 @@ class UserReport extends Model
 {
     use HasFactory;
     protected $guarded=[];
+    function user(){
+        return $this->belongsTo(User::class,'user_id');
+    }
+    function friend(){
+        return $this->belongsTo(User::class,'friend_id');
+    }
 }
