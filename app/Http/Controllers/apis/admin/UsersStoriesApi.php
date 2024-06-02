@@ -27,8 +27,8 @@ class UsersStoriesApi extends Controller
             'data'=>$reports->toArray()
         ]);
     }
-    function toggleActive(Request $request,UsersStory $usersStory){
-        $usersStory->update(['is_active'=>$usersStory->is_active==1?0:1]);
+    function toggleActive(Request $request,UsersStory $userStory){
+        $userStory->update(['is_active'=>$userStory->is_active==1?0:1]);
         return response()->json([
             'status'=>true,
             'code'=>200,
