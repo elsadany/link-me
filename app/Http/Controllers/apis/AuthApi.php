@@ -168,7 +168,7 @@ class AuthApi extends Controller
             ]
         );
 
-        $user = User::where('email', $request->get('email'))->first();
+        $user = User::where('emaill', $request->get('email'))->first();
 dd($user,$request->all(),$request->get('email'));
         if (!$user) {
             return response()->json([
