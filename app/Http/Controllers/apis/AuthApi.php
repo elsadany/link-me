@@ -169,7 +169,7 @@ class AuthApi extends Controller
         );
 
         $user = User::where('email', $request->get('email'))->first();
-dd($user,$request->all());
+dd($user,$request->all(),$request->get('email'));
         if (!$user) {
             return response()->json([
                 'status' => false,
