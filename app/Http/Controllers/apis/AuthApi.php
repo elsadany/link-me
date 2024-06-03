@@ -167,7 +167,7 @@ class AuthApi extends Controller
                 'password.required' => __('auth.password_required'),
             ]
         );
-
+dd('hi');
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
