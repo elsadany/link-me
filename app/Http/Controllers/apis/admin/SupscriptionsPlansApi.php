@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DeleteReason;
 use App\Models\Product;
 use App\Models\SupscriptionPlan;
+use App\Models\UsersDiamond;
 use Illuminate\Http\Request;
 use App\Models\Country;
 
@@ -17,6 +18,7 @@ class SupscriptionsPlansApi extends Controller
             'data'=>$reasons->toArray()
         ]);
     }
+
     function store(Request $request)
     {
         $request->validate([
