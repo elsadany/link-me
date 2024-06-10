@@ -28,6 +28,7 @@ Route::prefix('admin')->group(function () {
     Route::post('reset-password', [\App\Http\Controllers\apis\admin\AuthApi::class, 'resetPassword']);
     Route::middleware('auth:admin')->group(function (){
        Route::get('my-account',[\App\Http\Controllers\apis\admin\AuthApi::class,'myaccount']);
+       Route::get('dashboard',[\App\Http\Controllers\apis\admin\AuthApi::class,'dashboard']);
        Route::post('update-profile',[\App\Http\Controllers\apis\admin\AuthApi::class,'updateProfile']);
        Route::post('update-password',[\App\Http\Controllers\apis\admin\AuthApi::class,'updatePassword']);
        Route::get('countries/toggle-active/{country}',[\App\Http\Controllers\apis\admin\CountriesApi::class,'toggleActive']);

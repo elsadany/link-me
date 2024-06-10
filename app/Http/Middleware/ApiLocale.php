@@ -26,6 +26,10 @@ class ApiLocale
         }
         if(auth()->guard('sanctum')->check()){
             $user=auth()->guard('sanctum')->user();
+            if($user->is_active==0){
+                $user->tokens()->delete();
+
+            }
             $user->update(['last_availablity'=>Carbon::now()]);
         }
         return $next($request);

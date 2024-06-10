@@ -81,12 +81,16 @@ class User extends Authenticatable
 
     function stories()
     {
-        return $this->hasMany(UsersStory::class, 'user_id')->where('expire_at', '>', Carbon::now());
+        return $this->hasMany(UsersStory::class, 'user_id')->where('expire_at', '>', Carbon::now())->where('is_active',1);
+    }
+    function notifications()
+    {
+        return $this->hasMany(Notification::class,'user_id');
     }
 
     function getNotificationsAttribute()
     {
-        return 0;
+        return $this->notifications()->where('read',1);
     }
 
     function getSentTicketsAttribute()

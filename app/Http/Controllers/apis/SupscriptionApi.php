@@ -170,7 +170,8 @@ class SupscriptionApi extends Controller
             'paid_by'=>$request->paid_by,
             'paid_at'=>Carbon::now('Asia/Riyadh'),
             'type'=>1,
-            'diamonds'=>$product->number
+            'diamonds'=>$product->number,
+            'amount'=>$product->price
 
         ]);
         $diamonds=UsersDiamond::where('user_id',$request->user()->id)->where('type',1)->sum('diamonds');

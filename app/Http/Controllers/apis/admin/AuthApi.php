@@ -6,8 +6,13 @@ use App\Models\Admin;
 use App\Models\Chat;
 use App\Models\Country;
 use App\Models\EmailCode;
+use App\Models\Product;
+use App\Models\SupscriptionPlan;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Models\UsersDiamond;
+use App\Models\UsersParchase;
+use App\Models\UsersStory;
 use Carbon\Carbon;
 use App\Models\Student;
 use Illuminate\Support\Str;
@@ -452,6 +457,18 @@ class AuthApi extends Controller
             'data' => null
 
         ]);
+    }
+    function dashboard(Request $request){
+        $data['admins']=Admin::count();
+        $data['countries']=Country::where('is_active',1)->count();
+        $data['users']=User::where('is_active',1)->where('type','user')->count();
+        $data['users_purchase']=UsersParchase::count();
+        $data['users_diamonds']=UsersDiamond::whereNotNull('product_id')->count();
+        $data['products']=Product::count();
+        $data['stories']=UsersStory::whereDate('created_at', Carbon::now()->format('m/d/Y'))->count();
+        $data['active_plans']=SupscriptionPlan::count();
+        $data['active_tickets']=Ticket::whereIn('status',['user_reply','pending'])->count();
+        return response()->json(['status'=>true,'code'=>200,'data'=>$data]);
     }
 
 }

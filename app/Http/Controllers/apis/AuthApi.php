@@ -426,7 +426,7 @@ class AuthApi extends Controller
 
     function countries()
     {
-        $countries = Country::all();
+        $countries = Country::where('is_active',1)->get();
         return response()->json([
             'status' => true,
             'code' => 200,

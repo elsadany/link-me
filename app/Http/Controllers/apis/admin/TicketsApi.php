@@ -36,6 +36,12 @@ class TicketsApi extends Controller
            'reply'=>$request->reply,
            'ticket_id'=>$ticket->id
        ]);
+       $user=$ticket->user;
+       $user->notifications()->create([
+           'title'=>'تم أضافة رد على التذكره الخاصة بك',
+           'body'=>$request->reply
+       ]);
+
         return response()->json([
             'status'=>true,
             'code'=>200,
