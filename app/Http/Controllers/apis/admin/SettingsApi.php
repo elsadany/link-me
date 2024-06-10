@@ -33,6 +33,8 @@ class SettingsApi extends Controller
             'privacy_ar'=>'required',
             'terms_en'=>'required',
             'terms_ar'=>'required',
+            'about_star_ar'=>'required',
+            'about_star_en'=>'required',
 
         ]);
        $user=$request->user();
@@ -43,6 +45,8 @@ class SettingsApi extends Controller
            'privacy_ar'=>$request->privacy_ar,
            'terms_en'=>$request->terms_en,
            'terms_ar'=>$request->terms_ar,
+           'about_star_ar'=>$request->about_star_ar,
+           'about_star_en'=>$request->about_star_en,
        ]);
         return response()->json([
             'status'=>true,
