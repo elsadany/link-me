@@ -9,6 +9,7 @@ class AppSetting extends Model
 {
     use HasFactory;
     public $timestamps=false;
+    protected $guarded=[];
     protected $appends=['about','privacy','terms'];
     function getAboutAttribute()
     {
