@@ -28,9 +28,9 @@ class PurchasesApi extends Controller
             $reasons=$reasons->where('subscription_plan_id',$request->plan_id);
            $reasons=$reasons->paginate(20);
 
-           $data['day_total']=UsersParchase::whereDate('paid_at',Carbon::now())->sum('total');
-           $data['week_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subWeek())->sum('total');
-           $data['month_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subMonth())->sum('total');
+           $data['day_total']=UsersParchase::whereDate('paid_at',Carbon::now())->sum('paid');
+           $data['week_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subWeek())->sum('paid');
+           $data['month_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subMonth())->sum('paid');
            $data['total']=UsersParchase::sum('total');
         return response()->json([
             'status'=>true,
