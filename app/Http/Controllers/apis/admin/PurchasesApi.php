@@ -55,10 +55,10 @@ class PurchasesApi extends Controller
             $reasons=$reasons->where('product_id',$request->product_id);
 
         $reasons=$reasons->paginate(20);
-        $data['day_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at',Carbon::now())->sum('total');
-        $data['week_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subWeek())->sum('total');
-        $data['month_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subMonth())->sum('total');
-        $data['total']=UsersDiamond::whereNotNull('product_id')->sum('total');
+        $data['day_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at',Carbon::now())->sum('amount');
+        $data['week_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subWeek())->sum('amount');
+        $data['month_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subMonth())->sum('amount');
+        $data['total']=UsersDiamond::whereNotNull('product_id')->sum('amount');
         return response()->json([
             'status'=>true,
             'code'=>200,
