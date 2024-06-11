@@ -247,7 +247,7 @@ class SupscriptionApi extends Controller
         $users_ids=UserBlock::where('user_id',$request->user()->id)->pluck('friend_id')->toArray();
         $friends_ids=UserBlock::where('friend_id',$request->user()->id)->pluck('user_id')->toArray();
         $users_ids=array_merge($users_ids,$friends_ids);
-        $users=User::join('user_stars','user_stars.user_id','users.id')
+        $users=User::where('is_active',1)->join('user_stars','user_stars.user_id','users.id')
             ->where('user_stars.expired_at','>=',Carbon::now('Asia/Riyadh')->format('Y-m-d H:m:s'))
             ->latest('user_stars.expired_at')
             ->whereNotIn('users.id',$users_ids)

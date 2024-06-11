@@ -179,6 +179,16 @@ class AuthApi extends Controller
 
             ]);
         }
+        if ($user->is_active==0) {
+            return response()->json([
+                'status' => false,
+                'code' => 400,
+                'message' => 'تم أيقاف هذا الأكونت',
+                'data' => null
+
+            ]);
+        }
+
 
 
         if (Hash::check($request->password, $user->password)) {
@@ -591,7 +601,7 @@ class AuthApi extends Controller
         $first_users = Chat::where('first_user_id', $request->user()->id)->where('is_accepted',1)->pluck('second_user_id')->toArray();
         $second_users = Chat::where('second_user_id', $request->user()->id)->where('is_accepted',1)->pluck('first_user_id')->toArray();
 
-        $users = User::whereNotIn('id', array_merge($second_users, $first_users, [$request->user()->id]))->where('type','user')->where('id','>',$request->user()->last_user_id);
+        $users = User::where('is_active',1)->whereNotIn('id', array_merge($second_users, $first_users, [$request->user()->id]))->where('type','user')->where('id','>',$request->user()->last_user_id);
         if($request->user()->type=='visitor')
             $users=$users->where('is_link',1);
         if ($request->has('gander'))
