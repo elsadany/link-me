@@ -31,7 +31,7 @@ class PurchasesApi extends Controller
            $data['day_total']=UsersParchase::whereDate('paid_at',Carbon::now())->sum('paid');
            $data['week_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subWeek())->sum('paid');
            $data['month_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subMonth())->sum('paid');
-           $data['total']=UsersParchase::sum('total');
+           $data['total']=UsersParchase::sum('paid');
         return response()->json([
             'status'=>true,
             'code'=>200,
