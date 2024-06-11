@@ -15,7 +15,7 @@ class UsersApi extends Controller
 {
     function index(Request $request)
     {
-        $reasons = User::where('type', 'user');
+        $reasons = User::where('type', 'user','subscription');
         if ($request->trashed == 1)
             $reasons = $reasons->onlyTrashed();
 

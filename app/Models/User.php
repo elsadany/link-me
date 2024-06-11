@@ -164,6 +164,10 @@ class User extends Authenticatable
         \Carbon\Carbon::setLocale(app()->getLocale());
         return Carbon::parse($this->last_availablity)->diffForHumans();
     }
+    function subscription(){
+        return $this->hasOne(UsersParchase::class,'user_id')->latest()->where('finish_at','>=',Carbon::now('Asia/Riyadh'));
+
+    }
 
 
 }
