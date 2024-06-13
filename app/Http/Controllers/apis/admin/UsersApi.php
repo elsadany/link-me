@@ -19,7 +19,7 @@ class UsersApi extends Controller
         if ($request->trashed == 1)
             $reasons = $reasons->onlyTrashed();
 
-        if ($request->has('name')) {
+        if ($request->name!='') {
             $reasons = $reasons->where('name', 'regexp', $request->name)
                 ->orWhere('email', 'regexp', $request->name)
                 ->orWhere('user_name', 'regexp', $request->name);
