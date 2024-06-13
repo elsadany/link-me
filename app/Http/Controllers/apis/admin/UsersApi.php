@@ -15,7 +15,7 @@ class UsersApi extends Controller
 {
     function index(Request $request)
     {
-        $reasons = User::where('type', 'user')->with('subscription');
+        $reasons = User::where('type', 'user');
         if ($request->trashed == 1)
             $reasons = $reasons->onlyTrashed();
 
@@ -40,6 +40,7 @@ class UsersApi extends Controller
 
     function show(User $user)
     {
+        $user=User::with('subscription')->where('id',$user->id)->first();
         return response()->json([
             'status' => true,
             'code' => 200,
