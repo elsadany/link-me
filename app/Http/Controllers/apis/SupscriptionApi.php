@@ -14,6 +14,7 @@ use App\Models\UsersParchase;
 use App\Models\UserStar;
 use App\Models\WaitingUserStar;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -247,12 +248,14 @@ class SupscriptionApi extends Controller
         $users_ids=UserBlock::where('user_id',$request->user()->id)->pluck('friend_id')->toArray();
         $friends_ids=UserBlock::where('friend_id',$request->user()->id)->pluck('user_id')->toArray();
         $users_ids=array_merge($users_ids,$friends_ids);
-        $users=User::where('is_active',1)->join('user_stars','user_stars.user_id','users.id')
-            ->where('user_stars.expired_at','>=',Carbon::now('Asia/Riyadh')->format('Y-m-d H:m:s'))
-            ->latest('user_stars.expired_at')
-            ->whereNotIn('users.id',$users_ids)
-            ->select('users.*')
-            ->get();
+        $users=Cache::remember('paid_top','10*60*60',function ()use($users_ids) {
+           return User::where('is_active', 1)->join('user_stars', 'user_stars.user_id', 'users.id')
+                ->where('user_stars.expired_at', '>=', Carbon::now('Asia/Riyadh')->format('Y-m-d H:m:s'))
+                ->latest('user_stars.expired_at')
+                ->whereNotIn('users.id', $users_ids)
+                ->select('users.*')
+                ->get();
+        });
         $userData=[];
         $x=0;
         foreach ($users as $key=>$user){
@@ -268,8 +271,9 @@ class SupscriptionApi extends Controller
 
         }
 
-        $users=User::where('type','user')->whereNotIn('users.id',$users_ids)->limit(15-$users->count())->inRandomOrder()->get();
-
+        $users= $users=Cache::remember('free_top','10*60*60',function ()use($users_ids,$x) {
+            return User::where('type', 'user')->whereNotIn('users.id', $users_ids)->limit(15 - $x)->inRandomOrder()->get();
+        });
 
         foreach ($users as $key=>$user){
 
