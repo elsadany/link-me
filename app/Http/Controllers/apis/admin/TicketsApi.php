@@ -11,7 +11,7 @@ class TicketsApi extends Controller
         $tickets=Ticket::with('replies');
         if($request->user_id!='')
             $tickets=$tickets->where('user_id',$request->user_id);
-        $tickets=$tickets->paginate(20);
+        $tickets=$tickets->latest('id')->paginate(20);
         return response()->json([
             'status'=>true,
             'code'=>200,
