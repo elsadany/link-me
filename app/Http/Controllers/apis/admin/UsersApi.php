@@ -98,7 +98,7 @@ class UsersApi extends Controller
         ]);
     }
     function reports(Request $request){
-        $reports=UserReport::with(['user','friend'])->paginate(20);
+        $reports=UserReport::with(['user','friend'])->latest('id')->paginate(20);
         return response()->json([
             'status' => true,
             'code' => 200,

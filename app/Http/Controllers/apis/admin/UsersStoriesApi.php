@@ -20,7 +20,7 @@ class UsersStoriesApi extends Controller
         ]);
     }
     function reports(Request $request){
-    $reports=StoriesReport::with(['story','user'])->paginate(20);
+    $reports=StoriesReport::with(['story','user'])->latest('id')->paginate(20);
         return response()->json([
             'status'=>true,
             'code'=>200,
