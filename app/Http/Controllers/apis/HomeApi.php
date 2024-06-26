@@ -19,6 +19,7 @@ use App\Models\UserReport;
 use App\Models\UsersStory;
 use Carbon\Carbon;
 use App\Models\Student;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -129,8 +130,13 @@ class HomeApi extends Controller
         $user_blocks=UserBlock::where('user_id',$request->user()->id)->pluck('friend_id')->toArray();
         $user_blocks=array_merge($user_blocks,UserBlock::where('friend_id',$request->user()->id)->pluck('user_id')->toArray());
         $user_ids=array_merge([$request->user()->id],$user_ids);
-        $stories = User::latest('id')->whereNotIn('id',$user_blocks)->with('stories')->whereHas('stories')->paginate(12);
-        $posts = User::latest('id')->whereNotIn('id',$user_blocks)->whereIn("id", $user_ids)->with('stories')->whereHas('stories')->paginate(12);
+
+        $stories = Cache::remember('stories_'.$request->user()->id,'10*60*60',function ()use($user_blocks) {
+            return User::latest('id')->whereNotIn('id', $user_blocks)->with('stories')->whereHas('stories')->paginate(12);
+        });
+        $posts = Cache::remember('posts_'.$request->user()->id,'10*60*60',function ()use($user_blocks,$user_ids) {
+            return User::latest('id')->whereNotIn('id', $user_blocks)->whereIn("id", $user_ids)->with('stories')->whereHas('stories')->paginate(12);
+        });
         return response()->json([
             'status' => true,
             'code' => 200,
