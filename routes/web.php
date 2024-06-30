@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test', [\App\Http\Controllers\TestController::class, 'uploadToSpace']);
 Route::get('terms',function (\Illuminate\Http\Request $request){
     if($request->get('locale')=='ar'){
         app()->setLocale('ar');
