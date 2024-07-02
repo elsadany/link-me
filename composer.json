@@ -10,6 +10,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
+        "laravel/telescope": "*",
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.28",
         "pusher/pusher-php-server": "^7.2"
