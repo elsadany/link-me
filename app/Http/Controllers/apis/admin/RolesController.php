@@ -3,25 +3,29 @@
 namespace App\Http\Controllers\apis\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
+use App\Models\MovementRequest;
+use App\Models\PointsRequestDetail;
+use App\Models\Role;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class AdminController extends Controller
+class RolesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $admins =Admin::where('id','!=',auth()->guard('admin')->user()->id)->get();
+        $users =Role::get();
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $admins->toArray(),
+            'data' => $users->toArray(),
             'message'=>''
         ]);
-
     }
 
     /**
@@ -30,25 +34,25 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-                'name' => 'required',
-                'email' => 'required|unique:admins',
-                'password'=>'required',
-                'role_id'=>'required'
-            ]
-        );
-        $admin =Admin::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'role_id'=>$request->role_id,
-            'password'=>Hash::make($request->password),
-
+            'name' => 'required',
+            'permissions'=>'required|array'
         ]);
 
+        $role = Role::create([
+            'name'=>$request->name,
+
+
+        ]);
+        foreach ($request->permissions as $one)
+        $role->permissions()->create([
+            'role'=>$one
+        ]);
+        $role=Role::with('permissions')->where('id',$role->id)->first();
 
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $admin->toArray(),
+            'data' => $role->toArray(),
             'message'=>'تم الأضافة بنجاح'
         ]);
     }
@@ -56,13 +60,14 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Admin $admin)
+    public function show(Role $role)
     {
 
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $admin->toArray(),
+            'data' => $role->toArray(),
+
             'message'=>''
         ]);
 
@@ -71,24 +76,29 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Admin $admin)
+    public function update(Request $request, Role $role)
     {
         $request->validate([
                 'name' => 'required',
-                'email' => 'required|unique:admins,email,'.$admin->id,
-                'role_id'=>'required'
+                'permissions'=>'required|array'
+        ]
 
-            ]
         );
 
-        $admin->update($request->except(['password','permissions','confirm_password','role_id'])+['updated_by'=>auth()->guard('admin')->user()->id]);
-        if($request->has('password')&&$request->password!='')
-            $admin->update(['password'=>Hash::make($request->password)]);
+        $role->update([
+            'name'=>$request->name,
 
+
+        ]);
+        $role->permissions()->delete();
+        foreach ($request->permissions as $one)
+            $role->permissions()->create([
+                'role'=>$one
+            ]);
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $admin->toArray(),
+            'data' => $role->toArray(),
             'message'=>'تم التعديل'
         ]);
     }
@@ -96,15 +106,15 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Admin $admin)
+    public function destroy(Role $role)
     {
-
-        $admin->delete();
+        $role->delete();
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $admin->toArray(),
+            'data' => '',
             'message'=>'تم الحذف'
         ]);
     }
+
 }

@@ -50,5 +50,12 @@ Route::prefix('admin')->group(function () {
        Route::get('user-stories-reports',[\App\Http\Controllers\apis\admin\UsersStoriesApi::class,'reports']);
        Route::get('user-stories/toggle-active/{userStory}',[\App\Http\Controllers\apis\admin\UsersStoriesApi::class,'toggleActive']);
        Route::apiResource('users-stories',\App\Http\Controllers\apis\admin\UsersStoriesApi::class);
+        //roles
+        Route::get('roles', [\App\Http\Controllers\apis\admin\RolesController::class, 'index']);
+        Route::post('roles/store', [\App\Http\Controllers\apis\admin\RolesController::class, 'store']);
+        Route::get('roles/show/{role}', [\App\Http\Controllers\apis\admin\RolesController::class, 'show']);
+        Route::post('roles/update/{role}', [\App\Http\Controllers\apis\admin\RolesController::class, 'update']);
+        Route::delete('roles/delete/{role}', [\App\Http\Controllers\apis\admin\RolesController::class, 'destroy']);
+
     });
 });

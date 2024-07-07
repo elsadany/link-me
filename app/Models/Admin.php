@@ -20,9 +20,13 @@ class Admin extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded=['id'];
+    protected $with=['role'];
     protected $hidden=['password'];
     public function ticketReplies()
     {
         return $this->morphMany(TicketsReply::class, 'replaibale');
+    }
+    function role(){
+        return $this->belongsTo(Role::class,'role_id');
     }
 }
