@@ -12,7 +12,7 @@ class StoriesComment extends Model
     protected $with=['user'];
     function user(){
         if($this->is_owner==0)
-        return $this->belongsTo(User::class,'user_id')->select('id', 'name');
+        return $this->belongsTo(User::class,'user_id')->select('id', 'name','email');
         else
             return null;
     }
