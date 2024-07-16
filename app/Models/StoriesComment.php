@@ -9,10 +9,10 @@ class StoriesComment extends Model
 {
     use HasFactory;
     protected $guarded=['id'];
-//    protected $with=['user'];
+    protected $with=['user'];
     function user(){
         if($this->is_owner==0)
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class,'user_id')->select('id', 'name');
         else
             return null;
     }
