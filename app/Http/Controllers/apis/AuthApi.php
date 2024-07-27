@@ -559,6 +559,20 @@ class AuthApi extends Controller
             'message' => __('auth.information_changed')
         ]);
     }
+    function toggleChats(Request $request)
+    {
+        $user = auth()->user();
+        if ($user->can_see_chats == 1)
+            $user->can_see_chats = 0;
+        else
+            $user->can_see_chats = 1;
+        $user->save();
+        return response()->json([
+            'status' => true,
+            'code' => 200,
+            'message' => __('auth.information_changed')
+        ]);
+    }
 
     function deleteAccount(Request $request)
     {

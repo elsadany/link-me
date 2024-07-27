@@ -46,6 +46,7 @@ Route::middleware('local')->group(function () {
         Route::post('toggle-available', [\App\Http\Controllers\apis\AuthApi::class, 'toggleAvailabe']);
         Route::post('toggle-online', [\App\Http\Controllers\apis\AuthApi::class, 'toggleOnline']);
         Route::post('toggle-link', [\App\Http\Controllers\apis\AuthApi::class, 'toggleLink']);
+        Route::post('toggle-chat', [\App\Http\Controllers\apis\AuthApi::class, 'toggleChats']);
         Route::post('delete-account',[\App\Http\Controllers\apis\AuthApi::class,'deleteAccount']);
         Route::post('tickets/store',[\App\Http\Controllers\apis\HomeApi::class,'storeTicket']);
         Route::post('tickets/store-reply',[\App\Http\Controllers\apis\HomeApi::class,'postReply']);

@@ -46,7 +46,7 @@ class ChatsApi extends Controller
                 'message' => 'لا يمكن ارسال طلب لنفسك '
             ]);
         $user = $request->user();
-        $second_user = User::find($request->user_id);
+        $second_user = User::findOrFail($request->user_id);
         if (($request->user()->type == 'visitor' || $second_user->type == 'visitor') && $request->type == 'friend_request') {
             return response()->json([
                 'status' => false,
