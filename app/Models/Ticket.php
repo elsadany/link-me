@@ -9,7 +9,7 @@ class Ticket extends Model
 {
     use HasFactory;
     protected $guarded=['id'];
-    protected $with=['user'];
+    protected $with=['user','replies'];
     function replies(){
         return $this->hasMany(TicketsReply::class,'ticket_id');
     }
