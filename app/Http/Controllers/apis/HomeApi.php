@@ -64,7 +64,7 @@ class HomeApi extends Controller
 
     function mytickets(Request $request)
     {
-        $tickets = Ticket::where('user_id', $request->user()->id)->latest('id');
+        $tickets = Ticket::where('user_id', $request->user()->id)->latest('id')->with(['user','replies']);
         if ($request->status != '')
             $tickets = $tickets->where('status', $request->status);
         if ($request->type != '')

@@ -37,7 +37,7 @@ class TicketsApi extends Controller
            'ticket_id'=>$ticket->id
        ]);
        $user=$ticket->user;
-       $ticket->update(['is_read'=>0]);
+       $ticket->update(['is_read'=>0,'status'=>'admin_reply']);
        $user->notifications()->create([
            'title'=>'تم أضافة رد على التذكره الخاصة بك',
            'body'=>$request->reply
