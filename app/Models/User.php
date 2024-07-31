@@ -100,7 +100,7 @@ class User extends Authenticatable
 
     function getUnreadTicketsAttribute()
     {
-        return $this->notifications()->where('read', 0)->count();
+        return $this->tickets()->where('is_read', 0)->count();
     }
 
     function getFollowersAttribute()
