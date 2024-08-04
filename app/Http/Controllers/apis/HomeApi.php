@@ -71,7 +71,7 @@ class HomeApi extends Controller
             $tickets = $tickets->where('type', $request->type);
         if ($request->ticket_type) {
             if ($request->ticket_type == 'box')
-                $tickets = $tickets->where('is_read', 0);
+                $tickets = $tickets->wherehas('replies');
             else
                 $tickets = $tickets->where('is_read', 1);
 
