@@ -25,11 +25,11 @@ use function PHPUnit\Framework\lessThanOrEqual;
 class SupscriptionApi extends Controller
 {
     function plans(Request $request){
-        $last_supscription=UsersParchase::latest()->where('user_id',$request->user()->id)->first();
+        $last_supscription=UsersParchase::latest('id')->where('user_id',$request->user()->id)->first();
 
         $last_supscription_data=['is_subscribed'=>0,"is_finished"=>0,'finish_at'=>null];
         if(is_object($last_supscription)) {
-            $last_supscription = UsersParchase::latest()->where('id', $last_supscription->id)->where('finish_at','>=',Carbon::now('Asia/Riyadh'))->first();
+            $last_supscription = UsersParchase::latest()->where('user_id',$request->user()->id)->whereDate('finish_at','>=',Carbon::now('Asia/Riyadh'))->first();
             if(is_object($last_supscription))
                 $last_supscription_data=['is_subscribed'=>1,"is_finished"=>0,'finish_at'=>$last_supscription->finish_at];
             else
