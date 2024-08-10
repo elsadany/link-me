@@ -99,6 +99,7 @@ class ChatsApi extends Controller
         ));
         if ($request->type != 'home') {
 
+dd(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك من' . $request->user()->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type,'chat_type'=>$request->type,'new_key'=>$request->type]));
 
             event(new SendFcmNotificationEvent([$second_user->fcm_token], 'تم ارسال طلب اليك', 'تم ارسال طلب اليك من' . $request->user()->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type,'chat_type'=>$request->type,'new_key'=>$request->type]));
             if ($chat_request == 1)
@@ -163,8 +164,8 @@ class ChatsApi extends Controller
             $chat->id,
             $chat->is_accepted
         ));
-        dd(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', ' تم رفض الطلب الخاص بك من طرف' . $chat->secondUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_rejected','new_key' => 'chat_rejected','chat_type'=>'chat_rejected'], 'acceptOrReject'));
-//        if ($chat->type == 'friend_request')
+
+        //        if ($chat->type == 'friend_request')
             event(new SendFcmNotificationEvent([$chat->firstUser->fcm_token], 'تم رفض الطلب الخاص بك', ' تم رفض الطلب الخاص بك من طرف' . $chat->secondUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_rejected','new_key' => 'chat_rejected','chat_type'=>'chat_rejected'], 'acceptOrReject'));
 
         return response()->json([
