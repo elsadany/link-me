@@ -41,7 +41,6 @@ class SendFcmNotification
             'data'=>$event->extra,
             'category'=>$event->category
         ];
-dd($this->pushFCM($fcmNotification));
         $result=$this->pushFCM($fcmNotification);
 
     }
@@ -60,7 +59,6 @@ dd($this->pushFCM($fcmNotification));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $result = curl_exec($ch);
         curl_close($ch);
-        dd($result,$data);
         return $result;
     }
 }
