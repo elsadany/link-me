@@ -34,14 +34,13 @@ class SendFcmNotification
             'category'=>$event->category
         ];
 
-        // $notification = array_merge($notification, $event->extra);
+         $notification = array_merge($notification, $event->extra);
         $fcmNotification = [
             'registration_ids' => $event->users,
             'notification'=>$notification,
             'data'=>$event->extra,
             'category'=>$event->category
         ];
-        dd( $fcmNotification);
 
         $result=$this->pushFCM($fcmNotification);
 
