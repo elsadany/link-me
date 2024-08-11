@@ -27,6 +27,7 @@ Route::middleware('local')->group(function () {
     Route::post('reset-password', [\App\Http\Controllers\apis\AuthApi::class, 'resetPassword']);
     Route::get('delete-reasons',[\App\Http\Controllers\apis\HomeApi::class,'reasons']);
     Route::get('countries',[\App\Http\Controllers\apis\AuthApi::class,'countries']);
+    Route::get('chat-check/{chat}',[\App\Http\Controllers\apis\ChatsApi::class,'checkChat']);
     Route::get('settings',[\App\Http\Controllers\apis\HomeApi::class,'appSetting']);
     Route::post('contacts/store',[\App\Http\Controllers\apis\HomeApi::class,'storeContact']);
 

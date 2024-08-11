@@ -38,7 +38,7 @@ class SendFcmNotification
         $fcmNotification = [
             'registration_ids' => $event->users,
             'notification'=>$notification,
-//            'data'=>$event->extra,
+            'data'=>$event->extra,
             'category'=>$event->category
         ];
         $result=$this->pushFCM($fcmNotification);
@@ -59,7 +59,6 @@ class SendFcmNotification
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $result = curl_exec($ch);
         curl_close($ch);
-        dd(json_encode($data),$result);
         return $result;
     }
 }
