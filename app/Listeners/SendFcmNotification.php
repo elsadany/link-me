@@ -36,7 +36,7 @@ class SendFcmNotification
 
          $notification = array_merge($notification, $event->extra);
         $fcmNotification = [
-            'to' => $event->users,
+            'registration_ids' => $event->users,
             'notification'=>$notification,
 //            'data'=>$event->extra,
             'category'=>$event->category
