@@ -272,7 +272,7 @@ class SupscriptionApi extends Controller
         }
 
         $users= $users=Cache::remember('free_top','10*60*60',function ()use($users_ids,$x) {
-            return User::where('type', 'user')->whereNotIn('users.id', $users_ids)->limit(15 - $x)->inRandomOrder()->get();
+            return User::where('type', 'user')->whereNotIn('users.id', $users_ids)->limit(45 - $x)->inRandomOrder()->get();
         });
 
         foreach ($users as $key=>$user){

@@ -660,7 +660,7 @@ class AuthApi extends Controller
             'data' => $user->toArray()
         ]);
     }
-    function showUser(Request $request){
+    function    showUser(Request $request){
         $user=User::where('id',$request->user_id)->first();
         if(!is_object($user)){
             return response()->json([
