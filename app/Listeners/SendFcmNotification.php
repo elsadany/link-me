@@ -36,16 +36,17 @@ class SendFcmNotification
 
         $notification = array_merge($notification, $event->extra);
         $fcmNotification = [
-            'registration_ids' => $event->users,
+            'token' => $event->users,
             'notification'=>$notification,
             'data'=>$event->extra,
             'category'=>$event->category
         ];
         $result=$this->pushFCM($fcmNotification);
-        dd($result);
+
     }
 
     public function pushFCM($data) {
+        $data['message']=$data;
         $headers = [
             'Authorization: Bearer ' . $this->getGoogleAccessToken(),
             'Content-Type: application/json'
