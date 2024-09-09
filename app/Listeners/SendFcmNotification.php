@@ -35,6 +35,10 @@ class SendFcmNotification
         ];
 
         $notification = array_merge($notification, $event->extra);
+        $notification=[
+            'hello' => $event->title,
+
+        ];
         $fcmNotification = [
             'message'=>[
             'token' => $event->users,
