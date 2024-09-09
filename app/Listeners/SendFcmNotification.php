@@ -38,7 +38,7 @@ class SendFcmNotification
         $fcmNotification = [
             'token' => $event->users,
 //            'notification'=>$notification,
-            'data'=>$event->extra,
+            'data'=>$notification,
 //            'category'=>$event->category
         ];
         $result=$this->pushFCM($fcmNotification);
