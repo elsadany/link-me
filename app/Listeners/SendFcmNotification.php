@@ -42,7 +42,7 @@ class SendFcmNotification
             'category'=>$event->category
         ];
         $result=$this->pushFCM($fcmNotification);
-
+dd($result);
     }
 
     public function pushFCM($data) {
