@@ -36,23 +36,24 @@ class SendFcmNotification
 
         $notification = array_merge($notification, $event->extra);
         $fcmNotification = [
+            'message'=>[
             'token' => $event->users,
 //            'notification'=>$notification,
             'data'=>$notification,
 //            'category'=>$event->category
-        ];
+        ]];
         $result=$this->pushFCM($fcmNotification);
 dd($result);
     }
 
     public function pushFCM($data) {
-        $data['message']=$data;
+dd(json_encode($data));
         $headers = [
             'Authorization: Bearer ' . $this->getGoogleAccessToken(),
             'Content-Type: application/json'
         ];
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com//v1/projects/link-me-7a76b/messages:send');
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/link-me-7a76b/messages:send');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
