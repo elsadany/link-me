@@ -37,7 +37,7 @@ class SendFcmNotification
         $notification = array_merge($notification, $event->extra);
         $notification=[
             'title' => $event->title,
-
+'body' => $event->message,
         ];
         $fcmNotification = [
             'message'=>[
