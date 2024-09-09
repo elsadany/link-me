@@ -44,7 +44,10 @@ class SendFcmNotification
             'message'=>[
             'token' => $event->users,
             'notification'=>$notification,
-            'data'=>$event->extra,
+//            'data'=>$event->extra,
+             'apns'=>['payload'=>[
+                 'aps'=>$event->extra
+             ]]
         ]];
         $result=$this->pushFCM($fcmNotification);
 dd($result);
