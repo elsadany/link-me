@@ -34,7 +34,7 @@ class SendFcmNotification
             'category'=>$event->category
         ];
 
-         $notification = array_merge($notification, $event->extra);
+        $notification = array_merge($notification, $event->extra);
         $fcmNotification = [
             'registration_ids' => $event->users,
             'notification'=>$notification,
@@ -42,12 +42,12 @@ class SendFcmNotification
             'category'=>$event->category
         ];
         $result=$this->pushFCM($fcmNotification);
-dd($result);
+        dd($result);
     }
 
     public function pushFCM($data) {
         $headers = [
-            'Authorization: bearer AAAA8APYtMw:APA91bFDOsCVJ8Cc-nNwZv1MLML9dUqyjBd7zO_OQDJ7uR7W3F1tookNvttll57qIysBFmC0ngYmeUp--VQ4EvoVeV-G_JonasEVDlkcTmbPmqxmv02XAvcZSRIuDD2gjdxxMRAZQ3Vy',
+            'Authorization: Bearer ' . $this->getGoogleAccessToken(),
             'Content-Type: application/json'
         ];
         $ch = curl_init();
@@ -60,5 +60,15 @@ dd($result);
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
+    }
+    private function getGoogleAccessToken(){
+
+        $credentialsFilePath = public_path('file.json'); //replace this with your actual path and file name
+        $client = new \Google_Client();
+        $client->setAuthCogitnfig($credentialsFilePath);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $client->refreshTokenWithAssertion();
+        $token = $client->getAccessToken();
+        return $token['access_token'];
     }
 }
