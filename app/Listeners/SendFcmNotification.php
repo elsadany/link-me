@@ -50,11 +50,11 @@ class SendFcmNotification
              ]]
         ]];
         $result=$this->pushFCM($fcmNotification);
-dd($result);
+
     }
 
     public function pushFCM($data) {
-        dd($data);
+
         $headers = [
             'Authorization: Bearer ' . $this->getGoogleAccessToken(),
             'Content-Type: application/json'
