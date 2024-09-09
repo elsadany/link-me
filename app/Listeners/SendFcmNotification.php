@@ -46,7 +46,6 @@ dd($result);
     }
 
     public function pushFCM($data) {
-        dd(json_encode($data));
         $data['message']=$data;
         $headers = [
             'Authorization: Bearer ' . $this->getGoogleAccessToken(),
