@@ -47,11 +47,11 @@ dd($result);
 
     public function pushFCM($data) {
         $headers = [
-            'Authorization: Bearer BOnr2ZcnapT7G7uNZSd-xND7nTkkDpuYFpBb2yIQpC81zZlIi4IQGmr0GxWesSSBsz4KzaLiugFlnFe-Lzej8Po',
+            'Authorization: key=AAAA8APYtMw:APA91bFDOsCVJ8Cc-nNwZv1MLML9dUqyjBd7zO_OQDJ7uR7W3F1tookNvttll57qIysBFmC0ngYmeUp--VQ4EvoVeV-G_JonasEVDlkcTmbPmqxmv02XAvcZSRIuDD2gjdxxMRAZQ3Vy',
             'Content-Type: application/json'
         ];
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send');
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
