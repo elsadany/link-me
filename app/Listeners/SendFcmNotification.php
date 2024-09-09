@@ -37,13 +37,13 @@ class SendFcmNotification
         $notification = array_merge($notification, $event->extra);
         $notification=[
             'title' => $event->title,
-'body' => $event->message,
+            'body' => $event->message,
         ];
         $fcmNotification = [
             'message'=>[
             'token' => $event->users,
-//            'notification'=>$notification,
-            'data'=>$notification,
+            'notification'=>$notification,
+//            'data'=>$notification,
 //            'category'=>$event->category
         ]];
         $result=$this->pushFCM($fcmNotification);
