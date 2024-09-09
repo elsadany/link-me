@@ -27,7 +27,7 @@ class SendFcmNotification
     public function handle(SendFcmNotificationEvent $event)
     {
         $notification = [
-            'title' => $event->title,
+            'hello' => $event->title,
             // 'body'=>$event->message??'',
             'body' => $event->message,
             'sound' => true,
@@ -37,9 +37,9 @@ class SendFcmNotification
         $notification = array_merge($notification, $event->extra);
         $fcmNotification = [
             'token' => $event->users,
-            'notification'=>$notification,
+//            'notification'=>$notification,
             'data'=>$event->extra,
-            'category'=>$event->category
+//            'category'=>$event->category
         ];
         $result=$this->pushFCM($fcmNotification);
 dd($result);
