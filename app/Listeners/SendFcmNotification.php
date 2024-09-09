@@ -47,7 +47,7 @@ dd($result);
 
     public function pushFCM($data) {
         $headers = [
-            'Authorization: Bearer AAAA8APYtMw:APA91bFDOsCVJ8Cc-nNwZv1MLML9dUqyjBd7zO_OQDJ7uR7W3F1tookNvttll57qIysBFmC0ngYmeUp--VQ4EvoVeV-G_JonasEVDlkcTmbPmqxmv02XAvcZSRIuDD2gjdxxMRAZQ3Vy',
+            'Authorization: Bearer BOnr2ZcnapT7G7uNZSd-xND7nTkkDpuYFpBb2yIQpC81zZlIi4IQGmr0GxWesSSBsz4KzaLiugFlnFe-Lzej8Po',
             'Content-Type: application/json'
         ];
         $ch = curl_init();
