@@ -65,7 +65,7 @@ class SendFcmNotification
 
         $credentialsFilePath = public_path('file.json'); //replace this with your actual path and file name
         $client = new \Google_Client();
-        $client->setAuthCogitnfig($credentialsFilePath);
+        $client->setAuthConfig($credentialsFilePath);
         $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
         $client->refreshTokenWithAssertion();
         $token = $client->getAccessToken();
