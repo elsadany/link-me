@@ -237,7 +237,8 @@ class ChatsApi extends Controller
             'message' => 'required_if:type,==,text',
             'media' => 'required_if:type,==,file|file',
             'media_type' => 'required_if:type,==,file',
-            'one_time' => 'boolean'
+            'one_time' => 'boolean',
+
         ]);
         if ($request->type == 'file' && $request->media_type == 'image')
             $request->validate(['media' => 'max:5120']);
@@ -267,9 +268,10 @@ class ChatsApi extends Controller
             'sender_id' => $request->user()->id,
             'type' => $request->type,
             'media_type' => $request->media_type,
-            'one_time' => $request->one_time == 1 ? 1 : 0,
+            'one_time' =>(integer) $request->one_time == 1 ? 1 : 0,
             'media_name' => $request->hasFile('media') ? $this->uploadfile($request->file('media')) : null
         ]);
+
         event(new \App\Events\Chat(
             $chat->id,
             $request->user()->id,
