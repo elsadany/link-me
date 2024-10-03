@@ -29,8 +29,9 @@ class Chat implements ShouldBroadcastNow
     public $file;
     public $created_at;
     public $one_time;
+    public $message_id;
 
-    public function __construct($chat_id, $user_id,$reciever_id, $user_name, $user_image, $message,$type,$media_type,$file,$created_at,$one_time=0)
+    public function __construct($chat_id, $user_id,$reciever_id, $user_name, $user_image, $message,$type,$media_type,$file,$created_at,$one_time=0,$message_id)
     {
         $this->chat_id = $chat_id;
         $this->user_id = $user_id;
@@ -43,6 +44,7 @@ class Chat implements ShouldBroadcastNow
         $this->file=$file;
         $this->created_at=$created_at;
         $this->one_time=$one_time;
+        $this->message_id=$message_id;
     }
 
     /**
@@ -69,7 +71,8 @@ class Chat implements ShouldBroadcastNow
            'media_type'=>$this->media_type,
            'file'=>$this->file,
            'created_at'=>$this->created_at,
-           'one_time'=>$this->one_time
+           'one_time'=>$this->one_time,
+           'message_id'=>$this->message_id
        ];
     }
     public function broadcastAs(): string

@@ -283,7 +283,9 @@ class ChatsApi extends Controller
             $request->media_type,
             $message->filePath,
             $message->created_at,
-            $message->one_time
+            $message->one_time,
+            $message->id,
+
 
         ));
 
