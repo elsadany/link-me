@@ -35,6 +35,10 @@ class SendFcmNotification
         ];
 
         $notification = array_merge($notification, $event->extra);
+        $data=[];
+        foreach($event->extra as $key=>$value){
+            $data[$key]=(string)$value;
+        }
         $notification=[
             'title' => $event->title,
             'body' => $event->message,
@@ -44,7 +48,7 @@ class SendFcmNotification
             'message'=>[
             'token' => $event->users,
             'notification'=>$notification,
-           'data'=>$event->extra,
+           'data'=>$data,
              'apns'=>['payload'=>[
                  'aps'=>$event->extra
              ]]
