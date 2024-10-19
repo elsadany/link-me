@@ -99,7 +99,7 @@ class ChatsApi extends Controller
         ));
         if ($request->type != 'home') {
 
-            event(new SendFcmNotificationEvent($second_user->fcm_token, 'تم ارسال طلب اليك', 'تم ارسال طلب اليك من' . $request->user()->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => $request->type,'chat_type'=>$request->type,'new_key'=>$request->type]));
+            event(new SendFcmNotificationEvent($second_user->fcm_token, 'تم ارسال طلب اليك', 'تم ارسال طلب اليك من' . $request->user()->name, ['chat_id' =>(string) $chat->id, 'sender_id' =>(string) $request->user()->id, 'is_accepted' =>(string) $chat->is_accepted, 'type' =>(string) $request->type,'chat_type'=>(string)$request->type,'new_key'=>(string)$request->type]));
             $chat->chat_type=$request->type;
             $chat->save();
             if ($chat_request == 1)
@@ -143,7 +143,7 @@ class ChatsApi extends Controller
             $chat->update(['expire_at' => null]);
         if ($chat->type == 'friend_request'){
 
-            event(new SendFcmNotificationEvent($chat->firstUser->fcm_token, 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك من طرف' . $chat->secondUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_accepted','new_key' => 'chat_accepted','chat_type'=>'chat_accepted'], 'acceptOrReject'));
+            event(new SendFcmNotificationEvent($chat->firstUser->fcm_token, 'تم الموافقه على الطلب الخاص بك', 'تم الموافقه على الطلب الخاص بك من طرف' . $chat->secondUser->name, ['chat_id' => (string)$chat->id, 'sender_id' =>(string) $request->user()->id, 'is_accepted' => (string)$chat->is_accepted, 'type' => 'chat_accepted','new_key' => 'chat_accepted','chat_type'=>'chat_accepted'], 'acceptOrReject'));
             $chat->chat_type='chat_accepted';
             $chat->save();
 
@@ -171,7 +171,7 @@ class ChatsApi extends Controller
         ));
 
         //        if ($chat->type == 'friend_request')
-            event(new SendFcmNotificationEvent($chat->firstUser->fcm_token, 'تم رفض الطلب الخاص بك', ' تم رفض الطلب الخاص بك من طرف' . $chat->secondUser->name, ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'is_accepted' => $chat->is_accepted, 'type' => 'chat_rejected','new_key' => 'chat_rejected','chat_type'=>'chat_rejected'], 'acceptOrReject'));
+            event(new SendFcmNotificationEvent($chat->firstUser->fcm_token, 'تم رفض الطلب الخاص بك', ' تم رفض الطلب الخاص بك من طرف' . $chat->secondUser->name, ['chat_id' => (string)$chat->id, 'sender_id' => (string)$request->user()->id, 'is_accepted' => (string)$chat->is_accepted, 'type' => 'chat_rejected','new_key' => 'chat_rejected','chat_type'=>'chat_rejected'], 'acceptOrReject'));
         $chat->chat_type='chat_rejected';
         $chat->save();
         return response()->json([
@@ -291,8 +291,8 @@ class ChatsApi extends Controller
 
         $chat = Chat::find($chat->id);
         event(new SendFcmNotificationEvent($reciever->fcm_token, 'تم ارسال رسالة لك', 'تم ارسال رسالة لك',
-            ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'reciever_id' => $reciever->id, 'message' => $request->message, 'is_accepted' => $chat->is_accepted, 'type' => 'chat',
-                'chat_message_type' => $request->type, 'media_type' => $request->media_type, 'file' => $message->filePath, 'one_time' => $message->one_time]));
+            ['chat_id' => (string)$chat->id, 'sender_id' =>(string) $request->user()->id, 'reciever_id' =>(string) $reciever->id, 'message' => $request->message, 'is_accepted' => (string)$chat->is_accepted, 'type' => 'chat',
+                'chat_message_type' => $request->type, 'media_type' => (string)$request->media_type, 'file' => (string)$message->filePath, 'one_time' => (string)$message->one_time]));
 
         return response()->json([
             'status' => true,
