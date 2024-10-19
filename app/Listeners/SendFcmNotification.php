@@ -71,7 +71,6 @@ class SendFcmNotification
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $result = curl_exec($ch);
-        dd($result);
         curl_close($ch);
         return $result;
     }
