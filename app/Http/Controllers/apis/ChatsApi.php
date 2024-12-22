@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\apis;
 
+use App\Events\Chats;
 use App\Events\LinkRequest;
 use App\Events\SendFcmNotificationEvent;
 use App\Models\AppSetting;
@@ -271,7 +272,7 @@ class ChatsApi extends Controller
             'one_time' =>(integer) $request->one_time == 1 ? 1 : 0,
             'media_name' => $request->hasFile('media') ? $this->uploadfile($request->file('media')) : null
         ]);
-
+        event(new Chats($reciever->id));
         event(new \App\Events\Chat(
             $chat->id,
             $request->user()->id,
