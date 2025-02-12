@@ -11,11 +11,14 @@ use App\Models\UsersDiamond;
 use App\Models\UsersParchase;
 use Carbon\Carbon;
 use App\Models\Student;
+use Illuminate\Support\Facades\Mail;
+
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\StudentResource;
+use App\Mail\ActiveEmail;
 
 class AuthApi extends Controller
 {
@@ -33,10 +36,11 @@ class AuthApi extends Controller
         if (is_object($user))
             $code = 201;
         EmailCode::where('email', $request->email)->delete();
-        EmailCode::create([
+        $code=EmailCode::create([
             'email' => $request->email,
             'code' => '5555'
         ]);
+        Mail::to($request->email)->send(new ActiveEmail($code->code));
         return response()->json([
             'status' => true,
             'code' => $code,
