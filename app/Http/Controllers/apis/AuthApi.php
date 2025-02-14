@@ -272,6 +272,7 @@ class AuthApi extends Controller
             'email' => $request->email,
             'code' => '5555'
         ]);
+        Mail::to($request->email)->send(new ActiveEmail($code->code));
 
         return response()->json([
             'status' => true,
