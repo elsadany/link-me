@@ -43,7 +43,7 @@ class AuthApi extends Controller
         Mail::to($request->email)->send(new ActiveEmail($code->code));
         return response()->json([
             'status' => true,
-            'code' => $code,
+            'code' => 200,
             'message' => __('auth.sent_successfully'),
             'data' => null
         ]);
@@ -270,7 +270,7 @@ class AuthApi extends Controller
         $code = EmailCode::whereEmail($request->email)->delete();
         EmailCode::create([
             'email' => $request->email,
-            'code' => rand(1000, 9999)
+            'code' => rand(1000, 9999)sss
         ]);
         Mail::to($request->email)->send(new ActiveEmail($code->code));
 
