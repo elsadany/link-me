@@ -38,7 +38,7 @@ class AuthApi extends Controller
         EmailCode::where('email', $request->email)->delete();
         $code=EmailCode::create([
             'email' => $request->email,
-            'code' => '5555'
+            'code' => rand(1000, 9999)
         ]);
         Mail::to($request->email)->send(new ActiveEmail($code->code));
         return response()->json([
@@ -270,7 +270,7 @@ class AuthApi extends Controller
         $code = EmailCode::whereEmail($request->email)->delete();
         EmailCode::create([
             'email' => $request->email,
-            'code' => '5555'
+            'code' => rand(1000, 9999)
         ]);
         Mail::to($request->email)->send(new ActiveEmail($code->code));
 
