@@ -42,6 +42,7 @@ return [
     'bio_required'=>'الوصف مطلوب',
     'gander_required'=>'الجنس مطلوب',
     'gander_in'=>'هذا الجنس  غير موجود',
-    'deleted_successfully'=>'تم الحذف بنجاح'
+    'deleted_successfully'=>'تم الحذف بنجاح',
+    'reset_email' =>'من فضلك أستخدم الكود التالى لاستكمال الطلب الخاص بك'
 
 ];

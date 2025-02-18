@@ -42,7 +42,8 @@ return [
     'bio_required'=>'bio required',
     'gander_required'=>'gander required',
     'gander_in'=>'this gander not exist',
-    'deleted_successfully'=>'Deleted Successfully'
+    'deleted_successfully'=>'Deleted Successfully',
+    'reset_email' =>'Please use the following code to complete your request.'
 
 
 
