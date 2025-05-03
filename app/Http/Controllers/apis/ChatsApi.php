@@ -302,7 +302,7 @@ class ChatsApi extends Controller
         ]);
     }
 
-    private function uploadfile($file)
+     function uploadfile($file)
     {
         $path = 'uploads';
         if (!file_exists($path)) {
