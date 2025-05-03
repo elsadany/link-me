@@ -28,6 +28,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\StudentResource;
+use FFMpeg\FFMpeg;
+use FFMpeg\Format\Audio\Mp3;
+
 use function PHPUnit\Framework\lessThanOrEqual;
 
 class ChatsApi extends Controller
