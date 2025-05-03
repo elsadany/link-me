@@ -321,6 +321,11 @@ class ChatsApi extends Controller
         $filename = Str::random(15);
         $filename = $filename . '.' . $exten;
         $file->move($newdir, $filename);
+        if($exten == 'm4a'){
+            $newfilename = Str::random(15).'.mp3';
+            $this->convertM4aToMp3($newdir . '/' . $filename, $newdir . '/' . $newfilename);
+            $filename = $newfilename;
+        }
         return $newdir . '/' . $filename;
     }
 
@@ -450,5 +455,22 @@ class ChatsApi extends Controller
             'message' => '',
             'data' => $chat->chat_type
         ]);
+    }
+    private function convertM4aToMp3($inputPath, $outputPath)
+    {
+        $ffmpeg = FFMpeg::create([
+            'ffmpeg.binaries'  => env('FFMPEG_PATH', '/usr/bin/ffmpeg'),
+            'ffprobe.binaries' => env('FFPROBE_PATH', '/usr/bin/ffprobe'),
+            'timeout'         => 3600, // The timeout for the underlying process
+            'ffmpeg.threads'   => 12,   // The number of threads that FFMpeg should use
+        ]);
+
+        $audio = $ffmpeg->open($inputPath);
+        
+        $format = new Mp3();
+        
+        $audio->save($format, $outputPath);
+        
+        return $outputPath;
     }
 }

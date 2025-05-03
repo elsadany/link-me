@@ -63,3 +63,4 @@ Route::get('about_star',function (\Illuminate\Http\Request $request){
 Route::get('broadcast',function (){
    return \App\Events\Hello::dispatch();
 });
+

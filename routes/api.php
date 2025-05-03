@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\apis\ChatsApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -94,5 +95,12 @@ Route::middleware('local')->group(function () {
         Route::post('friends/delete',[\App\Http\Controllers\apis\HomeApi::class,'deleteFriend']);
 
     });
+});
+
+Route::post('test-convert',function (Request $request){
+    $request->validate(['file'=>'required|file|mimes:m4a']);
+    $file = $request->file('file');
+    return app(ChatsApi::class)->uploadfile($file);
+
 });
 include __DIR__.'/adminApi.php';
