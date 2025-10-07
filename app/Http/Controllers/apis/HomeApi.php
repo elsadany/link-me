@@ -132,10 +132,10 @@ class HomeApi extends Controller
         $user_ids=array_merge([$request->user()->id],$user_ids);
 
         $stories = Cache::remember('stories_'.$request->user()->id,'10*60*60',function ()use($user_blocks) {
-            return User::latest('id')->whereNotIn('id', $user_blocks)->with('stories')->whereHas('stories')->paginate(12);
+            return User::latest('id')->where('is_active',1)->whereNotIn('id', $user_blocks)->with('stories')->whereHas('stories')->paginate(12);
         });
         $posts = Cache::remember('posts_'.$request->user()->id,'10*60*60',function ()use($user_blocks,$user_ids) {
-            return User::latest('id')->whereNotIn('id', $user_blocks)->whereIn("id", $user_ids)->with('stories')->whereHas('stories')->paginate(12);
+            return User::latest('id')->where('is_active',1)->whereNotIn('id', $user_blocks)->whereIn("id", $user_ids)->with('stories')->whereHas('stories')->paginate(12);
         });
         return response()->json([
             'status' => true,
