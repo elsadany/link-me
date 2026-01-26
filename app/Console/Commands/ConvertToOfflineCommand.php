@@ -30,7 +30,7 @@ class ConvertToOfflineCommand extends Command
         Log::info('Converting users to offline');
         
         $last_online=Carbon::now()->subMinutes(5);
-        User::where('last_availablity','<',$last_online)->update(['is_online'=>0]);
+        User::where('last_availablity','<',$last_online)->orWhereNull('last_availablity')->update(['is_online'=>0]);
         $this->info('Users converted to offline');
     }
 }
