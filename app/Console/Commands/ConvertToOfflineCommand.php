@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Carbon\Carbon;
 class ConvertToOfflineCommand extends Command
 {
     /**
