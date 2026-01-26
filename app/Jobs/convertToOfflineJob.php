@@ -18,7 +18,8 @@ class convertToOfflineJob implements ShouldQueue
     public function __construct()
     {
         $last_online=Carbon::now()->subMinutes(5);
-        $users=User::where('last_availablity','<',$last_online)->update(['is_online'=>0]);
+        Log::info('Converting users to offline');
+        User::where('last_availablity','<',$last_online)->update(['is_online'=>0]);
     }
 
     /**
