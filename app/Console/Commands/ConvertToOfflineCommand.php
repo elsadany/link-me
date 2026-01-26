@@ -26,6 +26,9 @@ class ConvertToOfflineCommand extends Command
     public function handle()
     {
         Log::info('Converting users to offline');
+        
+        $last_online=Carbon::now()->subMinutes(5);
         User::where('last_availablity','<',$last_online)->update(['is_online'=>0]);
+        $this->info('Users converted to offline');
     }
 }
