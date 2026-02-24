@@ -41,7 +41,7 @@ class AuthApi extends Controller
             'email' => $request->email,
             'code' => rand(1000, 9999)
         ]);
-        Mail::to($request->email)->send(new ActiveEmail($code->code));
+        app(MailService::class)->sendEmail($request->email, 'كود التفعيل الخاص بك هو :'.$code->code, 'كود التفعيل الخاص بك هو :'.$code->code);
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -273,7 +273,7 @@ class AuthApi extends Controller
             'email' => $request->email,
             'code' => rand(1000, 9999)
         ]);
-        Mail::to($request->email)->send(new ActiveEmail($code->code));
+        app(MailService::class)->sendEmail($request->email, 'كود الأستعادة الخاص بك هو :'.$code->code, 'كود الأستعادة الخاص بك هو :'.$code->code);
 
         return response()->json([
             'status' => true,

@@ -11,7 +11,7 @@ class MailService
         $response = Http::withHeaders([
             'accept'=>'application/json',
             'content-type'=>'application/json',
-        ])->post('https://mail.tajerexpo.net/api/send-mail',  [
+        ])->post('https://mail.link-me.co/api/send-mail',  [
             'email' => $to,
             'title' => $subject,
             'body' => $body,
