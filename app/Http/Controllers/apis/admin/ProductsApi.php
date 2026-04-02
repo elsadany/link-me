@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\apis\admin;
 use App\Http\Controllers\Controller;
+use App\Support\ApiCatalogCache;
 use App\Models\DeleteReason;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ class ProductsApi extends Controller
             'description'=>$request->description,
 
         ]);
+        ApiCatalogCache::forgetProducts();
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -59,6 +61,7 @@ class ProductsApi extends Controller
             'price'=>$request->price,
             'description'=>$request->description,
         ]);
+        ApiCatalogCache::forgetProducts();
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -67,6 +70,7 @@ class ProductsApi extends Controller
     }
     function destroy(Request $request,Product $product){
         $product->delete();
+        ApiCatalogCache::forgetProducts();
         return response()->json([
             'status'=>true,
             'code'=>200,

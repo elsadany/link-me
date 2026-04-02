@@ -14,6 +14,7 @@ use App\Models\UsersDiamond;
 use App\Models\UsersParchase;
 use App\Models\UsersStory;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Student;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -459,16 +460,21 @@ class AuthApi extends Controller
         ]);
     }
     function dashboard(Request $request){
-        $data['admins']=Admin::count();
-        $data['countries']=Country::where('is_active',1)->count();
-        $data['users']=User::where('is_active',1)->where('type','user')->count();
-        $data['users_purchase']=UsersParchase::count();
-        $data['users_diamonds']=UsersDiamond::whereNotNull('product_id')->count();
-        $data['products']=Product::count();
-        $data['stories']=UsersStory::whereDate('created_at', Carbon::now()->format('m/d/Y'))->count();
-        $data['active_plans']=SupscriptionPlan::count();
-        $data['active_tickets']=Ticket::whereIn('status',['user_reply','pending'])->count();
-        return response()->json(['status'=>true,'code'=>200,'data'=>$data]);
+        $data = Cache::remember('admin_dashboard_stats_v1', 120, function () {
+            return [
+                'admins' => Admin::count(),
+                'countries' => Country::where('is_active', 1)->count(),
+                'users' => User::where('is_active', 1)->where('type', 'user')->count(),
+                'users_purchase' => UsersParchase::count(),
+                'users_diamonds' => UsersDiamond::whereNotNull('product_id')->count(),
+                'products' => Product::count(),
+                'stories' => UsersStory::whereDate('created_at', Carbon::now()->toDateString())->count(),
+                'active_plans' => SupscriptionPlan::count(),
+                'active_tickets' => Ticket::whereIn('status', ['user_reply', 'pending'])->count(),
+            ];
+        });
+
+        return response()->json(['status' => true, 'code' => 200, 'data' => $data]);
     }
 
 }

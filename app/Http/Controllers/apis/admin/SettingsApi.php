@@ -21,7 +21,7 @@ class SettingsApi extends Controller
         return response()->json([
             'status'=>true,
             'code'=>200,
-            'data'=>Ticket::where('id',$ticket->id)->with('replies')->first()->toArray()
+            'data'=>$ticket->loadMissing('replies')->toArray()
         ]);
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\apis\admin;
 use App\Http\Controllers\Controller;
+use App\Support\ApiCatalogCache;
 use App\Models\DeleteReason;
 use App\Models\Product;
 use App\Models\SupscriptionPlan;
@@ -49,6 +50,7 @@ class SupscriptionsPlansApi extends Controller
             'title_en'=>$request->title_en[$k]
         ]);
     }
+        ApiCatalogCache::forgetSubscriptionPlans();
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -84,6 +86,7 @@ class SupscriptionsPlansApi extends Controller
                 'title_en' => $request->title_en[$k]
             ]);
         }
+        ApiCatalogCache::forgetSubscriptionPlans();
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -92,6 +95,7 @@ class SupscriptionsPlansApi extends Controller
     }
     function destroy(Request $request,SupscriptionPlan $supscriptionPlan){
         $supscriptionPlan->delete();
+        ApiCatalogCache::forgetSubscriptionPlans();
         return response()->json([
             'status'=>true,
             'code'=>200,

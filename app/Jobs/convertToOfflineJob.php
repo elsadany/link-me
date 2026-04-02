@@ -8,6 +8,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+
 class convertToOfflineJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -17,9 +19,7 @@ class convertToOfflineJob implements ShouldQueue
      */
     public function __construct()
     {
-        $last_online=Carbon::now()->subMinutes(5);
-        Log::info('Converting users to offline');
-        User::where('last_availablity','<',$last_online)->update(['is_online'=>0]);
+      
     }
 
     /**
@@ -27,6 +27,10 @@ class convertToOfflineJob implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        
+        $last_online=Carbon::now()->subMinutes(5);
+        Log::info('Converting users to offline');
+        \App\Models\User::where('last_availablity','<',$last_online)->orWhereNull('last_availablity')->update(['is_online'=>0]);
+        Log::info('Users converted to offline');
     }
 }

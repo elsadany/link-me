@@ -47,7 +47,7 @@ class RolesController extends Controller
         $role->permissions()->create([
             'role'=>$one
         ]);
-        $role=Role::with('permissions')->where('id',$role->id)->first();
+        $role->load('permissions');
 
         return response()->json([
             'status' => true,

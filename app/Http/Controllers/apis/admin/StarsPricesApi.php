@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\apis\admin;
 use App\Http\Controllers\Controller;
+use App\Support\ApiCatalogCache;
 use App\Models\DeleteReason;
 use App\Models\Product;
 use App\Models\StarsPrice;
@@ -34,6 +35,7 @@ class StarsPricesApi extends Controller
             'diamonds'=>$request->diamonds,
 
         ]);
+        ApiCatalogCache::forgetStars();
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -54,6 +56,7 @@ class StarsPricesApi extends Controller
             'hours'=>$request->hours,
             'diamonds'=>$request->diamonds,
         ]);
+        ApiCatalogCache::forgetStars();
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -62,6 +65,7 @@ class StarsPricesApi extends Controller
     }
     function destroy(Request $request,StarsPrice $starPrice){
         $starPrice->delete();
+        ApiCatalogCache::forgetStars();
         return response()->json([
             'status'=>true,
             'code'=>200,

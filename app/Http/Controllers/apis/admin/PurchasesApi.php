@@ -9,6 +9,7 @@ use App\Models\UsersParchase;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Country;
+use Illuminate\Support\Facades\Cache;
 
 class PurchasesApi extends Controller
 {
@@ -28,10 +29,16 @@ class PurchasesApi extends Controller
             $reasons=$reasons->where('subscription_plan_id',$request->plan_id);
            $reasons=$reasons->paginate(20);
 
-           $data['day_total']=UsersParchase::whereDate('paid_at',Carbon::now())->sum('paid');
-           $data['week_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subWeek())->sum('paid');
-           $data['month_total']=UsersParchase::whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subMonth())->sum('paid');
-           $data['total']=UsersParchase::sum('paid');
+           $data = Cache::remember('admin_purchases_totals_v1', 60, function () {
+               $now = Carbon::now();
+
+               return [
+                   'day_total' => UsersParchase::whereDate('paid_at', $now)->sum('paid'),
+                   'week_total' => UsersParchase::whereDate('paid_at', '<=', $now)->whereDate('paid_at', '>=', $now->copy()->subWeek())->sum('paid'),
+                   'month_total' => UsersParchase::whereDate('paid_at', '<=', $now)->whereDate('paid_at', '>=', $now->copy()->subMonth())->sum('paid'),
+                   'total' => UsersParchase::sum('paid'),
+               ];
+           });
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -55,10 +62,16 @@ class PurchasesApi extends Controller
             $reasons=$reasons->where('product_id',$request->product_id);
 
         $reasons=$reasons->paginate(20);
-        $data['day_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at',Carbon::now())->sum('amount');
-        $data['week_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subWeek())->sum('amount');
-        $data['month_total']=UsersDiamond::whereNotNull('product_id')->whereDate('paid_at','<=',Carbon::now())->whereDate('paid_at','>=',Carbon::now()->subMonth())->sum('amount');
-        $data['total']=UsersDiamond::whereNotNull('product_id')->sum('amount');
+        $data = Cache::remember('admin_diamonds_totals_v1', 60, function () {
+            $now = Carbon::now();
+
+            return [
+                'day_total' => UsersDiamond::whereNotNull('product_id')->whereDate('paid_at', $now)->sum('amount'),
+                'week_total' => UsersDiamond::whereNotNull('product_id')->whereDate('paid_at', '<=', $now)->whereDate('paid_at', '>=', $now->copy()->subWeek())->sum('amount'),
+                'month_total' => UsersDiamond::whereNotNull('product_id')->whereDate('paid_at', '<=', $now)->whereDate('paid_at', '>=', $now->copy()->subMonth())->sum('amount'),
+                'total' => UsersDiamond::whereNotNull('product_id')->sum('amount'),
+            ];
+        });
         return response()->json([
             'status'=>true,
             'code'=>200,

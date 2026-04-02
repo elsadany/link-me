@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\StudentResource;
 use App\Mail\ActiveEmail;
 use App\services\MailService;
+use Illuminate\Support\Facades\Cache;
 
 class AuthApi extends Controller
 {
@@ -120,9 +121,7 @@ class AuthApi extends Controller
         ]);
         $user->update(['user_name' => 'user' . $user->id]);
         $userData = $user->toArray();
-        $diamonds = UsersDiamond::where('user_id', $user->id)->where('type', 1)->sum('diamonds');
-        $used = UsersDiamond::where('user_id', $user->id)->where('type', 0)->sum('diamonds');
-        $userData['diamonds'] = $diamonds - $used;
+        $userData['diamonds'] = UsersDiamond::netBalanceForUser($user->id);
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -149,9 +148,7 @@ class AuthApi extends Controller
                 'name' => 'visitor' . $user->id, 'email' => 'visitor' . $user->id . '@linkme.live']);
         }
         $userData = $user->toArray();
-        $diamonds = UsersDiamond::where('user_id', $user->id)->where('type', 1)->sum('diamonds');
-        $used = UsersDiamond::where('user_id', $user->id)->where('type', 0)->sum('diamonds');
-        $userData['diamonds'] = $diamonds - $used;
+        $userData['diamonds'] = UsersDiamond::netBalanceForUser($user->id);
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -199,10 +196,8 @@ class AuthApi extends Controller
         if (Hash::check($request->password, $user->password)) {
             $token = $user->createToken('personal access token')->plainTextToken;
             $userData = $user->toArray();
-            $diamonds = UsersDiamond::where('user_id', $user->id)->where('type', 1)->sum('diamonds');
-            $used = UsersDiamond::where('user_id', $user->id)->where('type', 0)->sum('diamonds');
-            $userData['diamonds'] = $diamonds - $used;
-            $userData['is_subscribed'] = is_object(UsersParchase::latest()->where('user_id', $user->id)->where('finish_at','>=',Carbon::now('Asia/Riyadh'))->first())?1:0;
+            $userData['diamonds'] = UsersDiamond::netBalanceForUser($user->id);
+            $userData['is_subscribed'] = UsersParchase::userHasActiveSubscription($user->id) ? 1 : 0;
 
             return response()->json([
                 'status' => true,
@@ -227,11 +222,9 @@ class AuthApi extends Controller
     {
         $user = $request->user();
         $userData = $user->toArray();
-        $diamonds = UsersDiamond::where('user_id', $request->user()->id)->where('type', 1)->sum('diamonds');
-        $used = UsersDiamond::where('user_id', $request->user()->id)->where('type', 0)->sum('diamonds');
-        $userData['diamonds'] = $diamonds - $used;
+        $userData['diamonds'] = UsersDiamond::netBalanceForUser($request->user()->id);
         $userData['begin_at'] = null;
-        $userData['is_subscribed'] = is_object(UsersParchase::latest()->where('user_id', $user->id)->where('finish_at','>=',Carbon::now('Asia/Riyadh'))->first())?1:0;
+        $userData['is_subscribed'] = UsersParchase::userHasActiveSubscription($user->id) ? 1 : 0;
 
         $userData['blocks_number']=$user->blocks()->count();
         return response()->json([
@@ -442,11 +435,14 @@ class AuthApi extends Controller
 
     function countries()
     {
-        $countries = Country::where('is_active',1)->get();
+        $countries = Cache::remember('api_countries_active_v1', 3600, function () {
+            return Country::where('is_active', 1)->get()->toArray();
+        });
+
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data' => $countries->toArray()
+            'data' => $countries
         ]);
     }
 
@@ -618,12 +614,20 @@ class AuthApi extends Controller
             'time_period' => 'in:1,2,3',
             'country_id' => 'exists:countries,id'
         ]);
-        $first_users = Chat::where('first_user_id', $request->user()->id)->where('is_accepted',1)->pluck('second_user_id')->toArray();
-        $second_users = Chat::where('second_user_id', $request->user()->id)->where('is_accepted',1)->pluck('first_user_id')->toArray();
+        $uid = $request->user()->id;
+        $chatPartnerIds = Chat::query()
+            ->where('is_accepted', 1)
+            ->where(function ($q) use ($uid) {
+                $q->where('first_user_id', $uid)->orWhere('second_user_id', $uid);
+            })
+            ->get(['first_user_id', 'second_user_id'])
+            ->map(fn ($c) => (int) ($c->first_user_id == $uid ? $c->second_user_id : $c->first_user_id))
+            ->unique()
+            ->all();
 
         $users = User::where('is_active',1)
         ->where('is_online',1)
-        ->whereNotIn('id', array_merge($second_users, $first_users, [$request->user()->id]))->where('type','user')->where('id','>',$request->user()->last_user_id);
+        ->whereNotIn('id', array_merge($chatPartnerIds, [$uid]))->where('type','user')->where('id','>',$request->user()->last_user_id);
         if($request->user()->type=='visitor')
             $users=$users->where('is_link',1);
         if ($request->has('gander'))

@@ -19,7 +19,6 @@ use App\Models\UserReport;
 use App\Models\UsersStory;
 use Carbon\Carbon;
 use App\Models\Student;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -77,7 +76,9 @@ class HomeApi extends Controller
 
         }
         $tickets = $tickets->paginate(20);
-        Ticket::where('user_id', $request->user()->id)->latest('id')->update(['is_read' => 1]);
+        if ($tickets->isNotEmpty()) {
+            Ticket::whereIn('id', $tickets->pluck('id'))->update(['is_read' => 1]);
+        }
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -96,7 +97,7 @@ class HomeApi extends Controller
             'reply' => $request->reply,
             'status' => ''
         ]);
-        Ticket::where('id', $request->ticket_id)->first()->update(['status' => 'user_reply', 'is_read' => 1]);
+        Ticket::whereKey($request->ticket_id)->update(['status' => 'user_reply', 'is_read' => 1]);
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -125,18 +126,31 @@ class HomeApi extends Controller
 
     function getStories(Request $request)
     {
-        $user_ids = UserFriend::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
-        $user_ids = array_merge($user_ids, UserFriend::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
-        $user_blocks=UserBlock::where('user_id',$request->user()->id)->pluck('friend_id')->toArray();
-        $user_blocks=array_merge($user_blocks,UserBlock::where('friend_id',$request->user()->id)->pluck('user_id')->toArray());
-        $user_ids=array_merge([$request->user()->id],$user_ids);
+        $uid = $request->user()->id;
 
-        $stories = Cache::remember('stories_'.$request->user()->id,'10*60*60',function ()use($user_blocks) {
-            return User::latest('id')->where('is_active',1)->whereNotIn('id', $user_blocks)->with('stories')->whereHas('stories')->paginate(12);
-        });
-        $posts = Cache::remember('posts_'.$request->user()->id,'10*60*60',function ()use($user_blocks,$user_ids) {
-            return User::latest('id')->where('is_active',1)->whereNotIn('id', $user_blocks)->whereIn("id", $user_ids)->with('stories')->whereHas('stories')->paginate(12);
-        });
+        $friendRows = UserFriend::query()
+            ->where('user_id', $uid)
+            ->orWhere('friend_id', $uid)
+            ->get(['user_id', 'friend_id']);
+        $user_ids = $friendRows
+            ->map(fn ($r) => (int) ($r->user_id == $uid ? $r->friend_id : $r->user_id))
+            ->push($uid)
+            ->unique()
+            ->values()
+            ->all();
+
+        $blockRows = UserBlock::query()
+            ->where('user_id', $uid)
+            ->orWhere('friend_id', $uid)
+            ->get(['user_id', 'friend_id']);
+        $user_blocks = $blockRows
+            ->map(fn ($r) => (int) ($r->user_id == $uid ? $r->friend_id : $r->user_id))
+            ->unique()
+            ->values()
+            ->all();
+
+        $stories = User::latest('id')->where('is_active', 1)->whereNotIn('id', $user_blocks)->with('stories')->whereHas('stories')->paginate(12);
+        $posts = User::latest('id')->where('is_active', 1)->whereNotIn('id', $user_blocks)->whereIn('id', $user_ids)->with('stories')->whereHas('stories')->paginate(12);
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -292,7 +306,9 @@ class HomeApi extends Controller
             ->orWhere(function ($query) use ($request) {
                 $query->where(['second_user_id' => $request->user()->id, 'first_user_id' => $request->user_id]);
             })->first();
-        $chat->update(['is_ended'=>1]);
+        if ($chat) {
+            $chat->update(['is_ended' => 1]);
+        }
         return response()->json([
             'status' => true,
             'code' => 200,

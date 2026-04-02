@@ -3,15 +3,18 @@ namespace App\Http\Controllers\apis\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Country;
+use Illuminate\Support\Facades\Cache;
 
 class CountriesApi extends Controller
 {
     function index(Request $request){
         $countries=Country::oldest('country_enName');
         if($request->search!='')
-            $countries=$countries->where('country_enName','regexp',$request->search)
-                ->orWhere('country_arName','regexp',$request->search);
-            $countries=$countries->paginate(20);
+            $countries=$countries->where(function ($q) use ($request) {
+                $q->where('country_enName','regexp',$request->search)
+                    ->orWhere('country_arName','regexp',$request->search);
+            });
+        $countries=$countries->paginate(20);
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -22,7 +25,7 @@ class CountriesApi extends Controller
         return response()->json([
             'status'=>true,
             'code'=>200,
-            'data'=>Country::where('id',$request->country_id)->first()->toArray()
+            'data'=>Country::whereKey($request->country_id)->firstOrFail()->toArray()
         ]);
     }
     function store(Request $request)
@@ -39,6 +42,7 @@ class CountriesApi extends Controller
         'country_enNationality'=>$request->country_enName,
         'country_arNationality'=>$request->country_arName,
         ]);
+        Cache::forget('api_countries_active_v1');
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -58,6 +62,7 @@ class CountriesApi extends Controller
             'country_enNationality'=>$request->country_enName,
             'country_arNationality'=>$request->country_arName,
         ]);
+        Cache::forget('api_countries_active_v1');
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -66,6 +71,7 @@ class CountriesApi extends Controller
     }
     function destroy(Request $request,Country $country){
         $country->delete();
+        Cache::forget('api_countries_active_v1');
         return response()->json([
             'status'=>true,
             'code'=>200,
@@ -77,6 +83,7 @@ class CountriesApi extends Controller
             $country->update(['is_active'=>0]);
         else
             $country->update(['is_active'=>1]);
+        Cache::forget('api_countries_active_v1');
         return response()->json([
             'status'=>true,
             'code'=>200,

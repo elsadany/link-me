@@ -20,9 +20,11 @@ class UsersApi extends Controller
             $reasons = $reasons->onlyTrashed();
 
         if ($request->name!='') {
-            $reasons = $reasons->where('name', 'regexp', $request->name)
-                ->orWhere('email', 'regexp', $request->name)
-                ->orWhere('user_name', 'regexp', $request->name);
+            $reasons = $reasons->where(function ($q) use ($request) {
+                $q->where('name', 'regexp', $request->name)
+                    ->orWhere('email', 'regexp', $request->name)
+                    ->orWhere('user_name', 'regexp', $request->name);
+            });
         }
         if ($request->gander != '')
             $reasons = $reasons->where('gander', $request->gander);
@@ -40,7 +42,7 @@ class UsersApi extends Controller
 
     function show(User $user)
     {
-        $user=User::with('subscription')->where('id',$user->id)->first();
+        $user->load('subscription');
         return response()->json([
             'status' => true,
             'code' => 200,
