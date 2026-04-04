@@ -10,10 +10,12 @@ class StoriesComment extends Model
     use HasFactory;
     protected $guarded=['id'];
     protected $with=['user'];
-    function user(){
-        if($this->is_owner==0)
-        return $this->belongsTo(User::class,'user_id')->select('id', 'name','email');
-        else
-            return null;
+
+    /**
+     * Must always return a Relation; returning null breaks eager loading (e.g. story feeds).
+     */
+    function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email');
     }
 }
