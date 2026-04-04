@@ -149,8 +149,14 @@ class HomeApi extends Controller
             ->values()
             ->all();
 
-        $stories = User::latest('id')->where('is_active', 1)->whereNotIn('id', $user_blocks)->with('stories')->whereHas('stories')->paginate(12);
-        $posts = User::latest('id')->where('is_active', 1)->whereNotIn('id', $user_blocks)->whereIn('id', $user_ids)->with('stories')->whereHas('stories')->paginate(12);
+        $withStories = [
+            'stories' => function ($q) {
+                $q->withCount(['likes', 'comments']);
+            },
+        ];
+
+        $stories = User::latest('id')->where('is_active', 1)->whereNotIn('id', $user_blocks)->with($withStories)->whereHas('stories')->paginate(12);
+        $posts = User::latest('id')->where('is_active', 1)->whereNotIn('id', $user_blocks)->whereIn('id', $user_ids)->with($withStories)->whereHas('stories')->paginate(12);
         return response()->json([
             'status' => true,
             'code' => 200,

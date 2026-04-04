@@ -9,7 +9,11 @@ class UsersStory extends Model
 {
     protected $guarded=['id'];
     use HasFactory;
-    protected $appends=['video','likes','comments','is_like','is_read'];
+
+    /** Hide counter columns; `likes` append and `comments` relation still serialize. */
+    protected $hidden = ['likes_count', 'comments_count'];
+
+    protected $appends=['video','likes','is_like','is_read'];
     protected $with=['comments'];
     function getVideoAttribute(){
         if($this->file!='')
@@ -23,10 +27,11 @@ class UsersStory extends Model
         return $this->hasMany(StoriesComment::class,'story_id');
     }
     function getLikesAttribute(){
+        if (array_key_exists('likes_count', $this->attributes)) {
+            return (int) $this->attributes['likes_count'];
+        }
+
         return $this->likes()->count();
-    }
-    function getCommentsAttribute(){
-        return $this->comments()->count();
     }
     function user(){
         return $this->belongsTo(User::class,'user_id');
