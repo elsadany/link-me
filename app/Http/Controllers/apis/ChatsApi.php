@@ -96,8 +96,7 @@ class ChatsApi extends Controller
                 'second_user_id' => $request->user_id, 'type' => $request->type, 'is_accepted' => 0, 'delete_from_first_user' => 0, 'delete_from_second_user' => 0]);
             $x = 1;
         }
-        $chat = Chat::query()->withApiListAttributes()->find($chat->id);
-        Chat::hydrateBlockedForChats(collect([$chat]), auth()->id());
+        $chat = Chat::find($chat->id);
         event(new LinkRequest(
             $chat->id,
             $chat->is_accepted
@@ -123,7 +122,7 @@ class ChatsApi extends Controller
             'request_id' => 'required|exists:chats,id',
 
         ]);
-        $chat = Chat::with(['firstUser', 'secondUser'])->findOrFail($request->request_id);
+        $chat = Chat::find($request->request_id);
         $chat->is_accepted = 1;
         $chat->save();
         if ($chat->type == 'friend_request') {
@@ -167,7 +166,7 @@ class ChatsApi extends Controller
             'request_id' => 'required|exists:chats,id',
 
         ]);
-        $chat = Chat::with(['firstUser', 'secondUser'])->findOrFail($request->request_id);
+        $chat = Chat::find($request->request_id);
         $chat->is_accepted = 2;
         $chat->save();
         event(new LinkRequest(
@@ -202,8 +201,7 @@ class ChatsApi extends Controller
             });
 
         }
-        $chats = $chats->withApiListAttributes()->latest('updated_at')->paginate(10);
-        Chat::hydrateBlockedForChats($chats->getCollection(), $request->user()->id);
+        $chats = $chats->latest('updated_at')->paginate(10);
         return response()->json([
             'status' => true,
             'code' => 200,
@@ -216,8 +214,7 @@ class ChatsApi extends Controller
         $request->validate([
             'chat_id' => 'required|exists:chats,id'
         ]);
-        $chats = Chat::query()->withApiListAttributes()->findOrFail($request->chat_id);
-        Chat::hydrateBlockedForChats(collect([$chats]), $request->user()->id);
+        $chats = Chat::findOrFail($request->chat_id);
         if($request->type=='home')
             $chats->update(['type'=>'home','expire_at'=>null]);
 
@@ -259,15 +256,8 @@ class ChatsApi extends Controller
         }
         if ($chat->first_user_id == $request->user()->id)
             $reciever = User::find($chat->second_user_id);
-        $blockRows = UserBlock::query()
-            ->where('user_id', $request->user()->id)
-            ->orWhere('friend_id', $request->user()->id)
-            ->get(['user_id', 'friend_id']);
-        $ids = $blockRows
-            ->map(fn ($b) => (int) ($b->user_id == $request->user()->id ? $b->friend_id : $b->user_id))
-            ->unique()
-            ->values()
-            ->all();
+        $ids = UserBlock::where('user_id', $request->user()->id)->pluck('friend_id')->toArray();
+        $ids = array_merge($ids,UserBlock::where('friend_id', $request->user()->id)->pluck('user_id')->toArray());
         if (in_array($reciever->id, $ids)||in_array($request->user()->id,$ids))
             return response()->json([
                 'status' => true,
@@ -303,8 +293,7 @@ class ChatsApi extends Controller
 
         ));
 
-        $chat->refresh();
-        $chat->load(['firstUser', 'secondUser', 'message']);
+        $chat = Chat::find($chat->id);
         event(new SendFcmNotificationEvent($reciever->fcm_token, 'تم ارسال رسالة لك', 'تم ارسال رسالة لك',
             ['chat_id' => $chat->id, 'sender_id' => $request->user()->id, 'reciever_id' => $reciever->id, 'message' => $request->message, 'is_accepted' => $chat->is_accepted, 'type' => 'chat',
                 'chat_message_type' => $request->type, 'media_type' => $request->media_type, 'file' => $message->filePath, 'one_time' => $message->one_time]));
@@ -383,8 +372,8 @@ class ChatsApi extends Controller
 
     function EndChat(Chat $chat)
     {
-        $chat->messages()->delete();
         $chat->delete();
+        $chat->messages()->delete();
         return response()->json([
             'status' => true,
             'code' => 200,
