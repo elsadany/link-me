@@ -17,7 +17,7 @@ class Chat extends Model
     protected $with = [];
 
     protected $casts = [
-        'is_blocked' => 'boolean',
+        'is_blocked' => 'integer',
         'id' => 'integer',
     ];
 
