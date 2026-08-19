@@ -27,7 +27,7 @@ Route::get('terms',function (\Illuminate\Http\Request $request){
         app()->setLocale('en');
     }
    $setting=\App\Models\AppSetting::first();
-   $data['content']=$setting->terms;
+   $data['content']=$setting?->terms ?? '';
     return view('welcome',$data);
 
 });
@@ -38,7 +38,7 @@ Route::get('privacy',function (\Illuminate\Http\Request $request){
         app()->setLocale('en');
     }
    $setting=\App\Models\AppSetting::first();
-   $data['content']=$setting->privacy;
+   $data['content']=$setting?->privacy ?? '';
    return view('welcome',$data);
 });Route::get('about',function (\Illuminate\Http\Request $request){
     if($request->get('locale')=='ar'){
@@ -47,7 +47,7 @@ Route::get('privacy',function (\Illuminate\Http\Request $request){
         app()->setLocale('en');
     }
    $setting=\App\Models\AppSetting::first();
-   $data['content']=$setting->about;
+   $data['content']=$setting?->about ?? '';
     return view('welcome',$data);
 
 });
@@ -58,7 +58,7 @@ Route::get('about_star',function (\Illuminate\Http\Request $request){
         app()->setLocale('en');
     }
    $setting=\App\Models\AppSetting::first();
-   $data['content']=$setting->aboutStar;
+   $data['content']=$setting?->aboutStar ?? '';
     return view('welcome',$data);
 
 });

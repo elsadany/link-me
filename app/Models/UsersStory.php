@@ -14,7 +14,19 @@ class UsersStory extends Model
     protected $hidden = ['likes_count', 'comments_count'];
 
     protected $appends=['video','likes','is_like','is_read'];
-    protected $with=['comments'];
+
+    /**
+     * Eager loads used by story feeds — do not use global $with (avoids relation/accessor conflicts).
+     */
+    public function scopeForFeed($query)
+    {
+        return $query->with([
+            'comments' => fn ($q) => $q->with([
+                'user' => fn ($u) => $u->select('id', 'name', 'email')->withoutAppends(),
+            ]),
+        ])->withCount(['likes', 'comments']);
+    }
+
     function getVideoAttribute(){
         if($this->file!='')
             return url($this->file);

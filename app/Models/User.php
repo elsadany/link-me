@@ -88,11 +88,6 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class,'user_id');
     }
 
-    function getNotificationsAttribute()
-    {
-        return $this->notifications()->where('read',1);
-    }
-
     function getSentTicketsAttribute()
     {
         return $this->tickets()->where('is_read', 1)->count();
@@ -156,12 +151,16 @@ class User extends Authenticatable
             return 0;
         $x=0;
         foreach ($this->stories as $one){
-            $x +=$one->likes;
+            $x += $one->likes;
         }
         return $x;
     }
     function getLastSeenAttribute(){
+        if (empty($this->last_availablity)) {
+            return '';
+        }
         \Carbon\Carbon::setLocale(app()->getLocale());
+
         return Carbon::parse($this->last_availablity)->diffForHumans();
     }
     function subscription(){
